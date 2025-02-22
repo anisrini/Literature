@@ -6,8 +6,9 @@ from player import Player
 class TableGUI:
     def __init__(self, screen_size=(1024, 768)):
         pygame.init()
+        # Set up windowed display with resizable flag
         self.screen_size = screen_size
-        self.screen = pygame.display.set_mode(screen_size)
+        self.screen = pygame.display.set_mode(screen_size, pygame.RESIZABLE)
         pygame.display.set_caption("Literature Card Game")
         
         # Modern color scheme
@@ -18,22 +19,29 @@ class TableGUI:
         self.RED = (220, 20, 60)   # Crimson red
         self.BACKGROUND = (16, 24, 32)  # Dark blue-grey
         
-        # Table dimensions
-        self.center = (screen_size[0] // 2, screen_size[1] // 2)
-        self.table_radius = min(screen_size) * 0.35
+        self._update_dimensions()
         
-        # Card dimensions (larger cards)
-        self.card_width = 80
-        self.card_height = 112
-        self.card_spacing = 30
+    def _update_dimensions(self):
+        """Update dimensions when window is resized"""
+        # Adjust table dimensions
+        self.center = (self.screen_size[0] // 2, self.screen_size[1] // 2)
+        self.table_radius = min(self.screen_size) * 0.30
         
-        # Load custom font if available, otherwise use default
+        # Adjust card dimensions to fit screen
+        self.card_width = int(min(self.screen_size) * 0.07)
+        self.card_height = int(self.card_width * 1.4)
+        self.card_spacing = int(self.card_width * 0.6)
+        
+        # Adjust font sizes relative to card size
+        font_size = int(self.card_width * 0.32)
+        name_font_size = int(self.card_width * 0.42)
+        
         try:
-            self.card_font = pygame.font.Font("arial.ttf", 28)
-            self.name_font = pygame.font.Font("arial.ttf", 36)
+            self.card_font = pygame.font.Font("arial.ttf", font_size)
+            self.name_font = pygame.font.Font("arial.ttf", name_font_size)
         except:
-            self.card_font = pygame.font.SysFont("arial", 28)
-            self.name_font = pygame.font.SysFont("arial", 36)
+            self.card_font = pygame.font.SysFont("arial", font_size)
+            self.name_font = pygame.font.SysFont("arial", name_font_size)
             
     def draw_hexagonal_table(self):
         """Draws the hexagonal poker table with gradient and shadow"""
@@ -126,27 +134,45 @@ class TableGUI:
         # Draw players and their cards
         for i, player in enumerate(players):
             angle = i * 60 - 30
-            radius = self.table_radius + 80
+            # Adjust spacing from table edge
+            cards_radius = self.table_radius + self.card_height * 0.8
             
-            x = self.center[0] + radius * math.cos(math.radians(angle))
-            y = self.center[1] + radius * math.sin(math.radians(angle))
+            # Different text radius for side players vs top/bottom players
+            if i in [1, 2, 4, 5]:  # Side players
+                text_radius = self.table_radius + self.card_height * 2.2  # Increased radius for sides
+            else:  # Top and bottom players
+                text_radius = self.table_radius + self.card_height * 1.6
             
-            # Adjust position for cards
-            x -= (len(player.hand) * self.card_spacing) // 2
-            y -= self.card_height // 2
+            # Calculate base position for this player's cards
+            card_x = self.center[0] + cards_radius * math.cos(math.radians(angle))
+            card_y = self.center[1] + cards_radius * math.sin(math.radians(angle))
+            
+            # Calculate total width of cards for centering
+            total_width = (len(player.hand) - 1) * self.card_spacing + self.card_width
+            
+            # Adjust position to center the hand
+            card_x -= total_width // 2
+            card_y -= self.card_height // 2
             
             # Draw player's cards
-            self.draw_player_cards(x, y, player)
+            self.draw_player_cards(card_x, card_y, player)
             
-            # Draw player name with shadow effect
+            # Draw player name
             name = f"Player {i+1}"
             shadow_text = self.name_font.render(name, True, self.BLACK)
             text = self.name_font.render(name, True, self.WHITE)
             
-            text_rect = text.get_rect(center=(
-                self.center[0] + (self.table_radius + 160) * math.cos(math.radians(angle)),
-                self.center[1] + (self.table_radius + 160) * math.sin(math.radians(angle))
-            ))
+            # Position text with offset for side players
+            text_x = self.center[0] + text_radius * math.cos(math.radians(angle))
+            text_y = self.center[1] + text_radius * math.sin(math.radians(angle))
+            
+            # Additional horizontal offset for side players
+            if i in [1, 2]:  # Right side players
+                text_x += self.card_width * 0.8
+            elif i in [4, 5]:  # Left side players
+                text_x -= self.card_width * 0.8
+                
+            text_rect = text.get_rect(center=(text_x, text_y))
             
             # Draw shadow slightly offset
             shadow_rect = text_rect.copy()
@@ -164,8 +190,16 @@ class TableGUI:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:  # Keep escape to exit
+                        running = False
+                elif event.type == pygame.VIDEORESIZE:
+                    # Handle window resize
+                    self.screen_size = (event.w, event.h)
+                    self.screen = pygame.display.set_mode(self.screen_size, pygame.RESIZABLE)
+                    self._update_dimensions()
                     
             self.display_game_state(players)
-            pygame.time.wait(100)  # Small delay to prevent high CPU usage
+            pygame.time.wait(100)
             
         pygame.quit() 
