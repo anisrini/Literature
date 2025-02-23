@@ -1,6 +1,9 @@
 from typing import List, Optional, Tuple
-from player import Player
-from card import Card
+from literature_game.player import Player
+from literature_game.card import Card
+import logging
+
+logger = logging.getLogger(__name__)
 
 class GameState:
     def __init__(self, players: List[Player]):

@@ -1,9 +1,10 @@
 from typing import List
-from card import Card
+from literature_game.card import Card
 
 class Player:
-    def __init__(self, name: str):
+    def __init__(self, name: str, player_id: int = None):
         self.name = name
+        self.id = player_id if player_id is not None else 0
         self.hand = []
     
     def add_card(self, card: Card):

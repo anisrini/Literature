@@ -1,7 +1,9 @@
 import random
-from typing import List
-from card import Card
-from player import Player
+from typing import List, TYPE_CHECKING
+from literature_game.card import Card
+
+if TYPE_CHECKING:
+    from literature_game.player import Player  # Only used for type hints
 
 class Deck:
     SUITS = ['Hearts', 'Diamonds', 'Clubs', 'Spades']

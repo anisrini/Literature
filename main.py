@@ -1,57 +1,81 @@
-from deck import Deck
-from player import Player
-from visualization import display_all_hands
-from gui_visualization import TableGUI
-from startup_ui import StartupUI
-from game_state import GameState
-import pygame
+from kivy.app import App
+from kivy.config import Config
+from kivy.core.window import Window
+from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition
+from literature_game.gui.literature_game_gui import LiteratureGameGUI
+from literature_game.startup_ui import StartupUI
+from literature_game.game_state import GameState
+from literature_game.deck import Deck
+from literature_game.player import Player
+import logging
 
-def main():
-    # Show startup UI
-    startup = StartupUI()
-    num_players, player_names = startup.run()
-    
-    if not num_players or not player_names:  # If user closed the window
-        return
-    
-    # Calculate cards per player based on player count
-    cards_per_player = 6 if num_players == 8 else 8
-    
-    # Initialize game
-    deck = Deck()
-    deck.shuffle()
-    
-    # Create players with names from UI
-    players = [Player(name) for name in player_names]
-    
-    # Deal cards
-    deck.deal(players, cards_per_player)
-    
-    # Show ASCII visualization of all hands
-    display_all_hands(players)
-    
-    # Create game state
-    game_state = GameState(players)
-    
-    # Create GUI
-    gui = TableGUI()
-    
-    # Main game loop
-    running = True
-    while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    running = False
-            elif event.type == pygame.VIDEORESIZE:
-                gui.handle_resize(event)
-            else:
-                gui.handle_game_events(event, game_state)
+# Configure logging
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('literature_game.log'),
+        logging.StreamHandler()
+    ]
+)
+
+logger = logging.getLogger(__name__)
+
+# Set window size and make it resizable
+Config.set('graphics', 'width', '1920')
+Config.set('graphics', 'height', '1080')
+Config.set('graphics', 'resizable', True)
+Config.write()
+
+class LiteratureApp(App):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.game_state = None
+        self.game_gui = None
+        logger.info("LiteratureApp initialized")
+
+    def build(self):
+        logger.info("Initializing Literature Game application")
+        # Create screen manager
+        self.screen_manager = ScreenManager(transition=FadeTransition())
         
-        gui.display_game_state(game_state)
-        pygame.time.wait(100)
+        # Create startup screen
+        startup_screen = Screen(name='startup')
+        self.startup = StartupUI()
+        self.startup.app = self
+        startup_screen.add_widget(self.startup)
+        self.screen_manager.add_widget(startup_screen)
+        logger.debug("Startup screen initialized")
+        
+        return self.screen_manager
+    
+    def start_game(self, num_players):
+        logger.info(f"Starting new game with {num_players} players")
+        # Initialize players
+        player_names = [f"Player {i+1}" for i in range(num_players)]
+        players = [Player(name, i) for i, name in enumerate(player_names)]
+        
+        # Deal cards
+        deck = Deck()
+        deck.shuffle()
+        cards_per_player = 6 if num_players == 8 else 8
+        logger.debug(f"Dealing {cards_per_player} cards per player")
+        deck.deal(players, cards_per_player)
+        
+        # Initialize game state with players
+        self.game_state = GameState(players)
+        
+        # Create game screen
+        game_screen = Screen(name='game')
+        self.game_gui = LiteratureGameGUI()
+        self.game_gui.game_state = self.game_state  # Set the game state
+        game_screen.add_widget(self.game_gui)
+        logger.debug("Game screen initialized")
+        
+        # Add game screen and switch to it
+        self.screen_manager.add_widget(game_screen)
+        self.screen_manager.current = 'game'
+        logger.info("Game started successfully")
 
-if __name__ == "__main__":
-    main()
+if __name__ == '__main__':
+    LiteratureApp().run()
