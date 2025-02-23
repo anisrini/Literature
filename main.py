@@ -3,6 +3,8 @@ from player import Player
 from visualization import display_all_hands
 from gui_visualization import TableGUI
 from startup_ui import StartupUI
+from game_state import GameState
+import pygame
 
 def main():
     # Show startup UI
@@ -28,9 +30,28 @@ def main():
     # Show ASCII visualization of all hands
     display_all_hands(players)
     
-    # Create and run GUI visualization
+    # Create game state
+    game_state = GameState(players)
+    
+    # Create GUI
     gui = TableGUI()
-    gui.run(players)
+    
+    # Main game loop
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    running = False
+            elif event.type == pygame.VIDEORESIZE:
+                gui.handle_resize(event)
+            else:
+                gui.handle_game_events(event, game_state)
+        
+        gui.display_game_state(game_state)
+        pygame.time.wait(100)
 
 if __name__ == "__main__":
     main()

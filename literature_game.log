@@ -1,0 +1,88 @@
+2025-02-23 00:32:44,034 - INFO - Opening request dialog for Player 1
+2025-02-23 00:32:44,035 - INFO - Available opponents: ['P2', 'P4', 'P6']
+2025-02-23 00:32:44,036 - INFO - Requestable cards: ['9 of Clubs', 'Ace of Clubs', 'King of Clubs', 'Queen of Clubs', 'Queen of Clubs', '9 of Diamonds', 'Ace of Diamonds', 'Queen of Diamonds', 'Queen of Diamonds', '9 of Hearts', 'King of Hearts', 'Ace of Spades', 'King of Spades', '3 of Clubs', '6 of Clubs', '7 of Clubs', '3 of Diamonds', '6 of Diamonds', '7 of Diamonds', '3 of Spades', '6 of Spades', '7 of Spades']
+2025-02-23 00:33:05,828 - ERROR - Error processing card request: invalid literal for int() with base 10: 'P2'
+Traceback (most recent call last):
+  File "/Users/ani/Projects/workspace/Literature/gui_visualization.py", line 572, in handle_card_request
+    target_player = int(self.player_dropdown.selected_option[1]) - 1
+                    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: 'P2'
+2025-02-23 00:33:07,838 - INFO - Showing feedback: Invalid request
+2025-02-23 00:35:03,260 - INFO - Opening request dialog for Player 1
+2025-02-23 00:35:03,262 - INFO - Available opponents: ['P2', 'P4', 'P6']
+2025-02-23 00:35:03,262 - INFO - Requestable cards: ['Jack of Clubs', 'King of Clubs', 'King of Clubs', '9 of Diamonds', '9 of Diamonds', 'Queen of Diamonds', 'Queen of Diamonds', 'Jack of Hearts', 'Queen of Hearts', 'Queen of Hearts', '9 of Spades', '9 of Spades', 'Jack of Spades', 'King of Spades', 'King of Spades', '2 of Clubs', '2 of Diamonds', '2 of Hearts']
+2025-02-23 00:35:42,772 - INFO - Opening request dialog for Player 1
+2025-02-23 00:35:42,774 - INFO - Available opponents: ['P2', 'P4', 'P6']
+2025-02-23 00:35:42,774 - INFO - Requestable cards: ['10 of Clubs', 'Ace of Clubs', 'King of Clubs', '10 of Diamonds', 'King of Diamonds', 'Queen of Diamonds', 'Queen of Diamonds', 'Ace of Hearts', 'King of Hearts', '10 of Spades', 'Ace of Spades', 'Queen of Spades', 'Queen of Spades', '4 of Clubs', '4 of Clubs', '4 of Diamonds', '4 of Diamonds', '6 of Diamonds', '6 of Hearts', '6 of Spades']
+2025-02-23 00:35:44,426 - ERROR - Error processing card request: 'tuple' object has no attribute 'replace'
+Traceback (most recent call last):
+  File "/Users/ani/Projects/workspace/Literature/gui_visualization.py", line 574, in handle_card_request
+    target_player = int(self.player_dropdown.selected_option.replace('P', '')) - 1
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'tuple' object has no attribute 'replace'
+2025-02-23 00:35:46,435 - INFO - Showing feedback: Invalid request
+2025-02-23 00:36:44,375 - INFO - Opening request dialog for Player 1
+2025-02-23 00:36:44,376 - INFO - Available opponents: ['P2', 'P4', 'P6']
+2025-02-23 00:36:44,376 - INFO - Requestable cards: ['9 of Clubs', 'King of Clubs', 'King of Diamonds', 'Queen of Diamonds', 'Queen of Diamonds', '9 of Hearts', 'King of Hearts', 'Queen of Hearts', 'Queen of Hearts', '9 of Spades', 'Ace of Spades', 'Ace of Spades', 'Ace of Spades', '6 of Clubs', '6 of Hearts', '6 of Spades']
+2025-02-23 00:36:46,279 - INFO - Player 1 requesting 9 of Clubs from Player 2
+2025-02-23 00:36:46,280 - ERROR - Error processing card request: 'TableGUI' object has no attribute 'players'
+Traceback (most recent call last):
+  File "/Users/ani/Projects/workspace/Literature/gui_visualization.py", line 597, in handle_card_request
+    start_pos = self.get_card_position(target_player, i)
+  File "/Users/ani/Projects/workspace/Literature/gui_visualization.py", line 568, in get_card_position
+    angle_step = total_angle / (len(self.players[player_idx].hand) - 1) if len(self.players[player_idx].hand) > 1 else 0
+                                                                               ^^^^^^^^^^^^
+AttributeError: 'TableGUI' object has no attribute 'players'
+2025-02-23 00:36:48,287 - INFO - Showing feedback: Invalid request
+2025-02-23 00:37:26,714 - INFO - Opening request dialog for Player 1
+2025-02-23 00:37:26,715 - INFO - Available opponents: ['P2', 'P4', 'P6']
+2025-02-23 00:37:26,715 - INFO - Requestable cards: ['King of Clubs', 'Queen of Clubs', 'Queen of Clubs', 'Ace of Diamonds', 'King of Diamonds', 'Queen of Diamonds', 'Queen of Diamonds', 'Ace of Hearts', 'Ace of Spades', 'King of Spades', '3 of Clubs', '5 of Clubs', '7 of Clubs', '2 of Diamonds', '5 of Diamonds', '7 of Diamonds', '2 of Hearts', '3 of Hearts', '5 of Hearts', '7 of Hearts', '2 of Spades', '3 of Spades']
+2025-02-23 00:37:27,904 - INFO - Player 1 requesting King of Clubs from Player 2
+2025-02-23 00:37:27,904 - WARNING - Requested card King of Clubs not found in Player 2's hand
+2025-02-23 00:37:29,911 - INFO - Showing feedback: Player does not have King of Clubs
+2025-02-23 00:40:05,889 - INFO - Opening request dialog for Player 1
+2025-02-23 00:40:05,891 - INFO - Available opponents: ['P2', 'P4', 'P6']
+2025-02-23 00:40:05,891 - INFO - Requestable cards: ['Ace of Clubs', 'King of Clubs', 'Ace of Diamonds', 'Queen of Diamonds', 'King of Hearts', 'Queen of Hearts', 'Ace of Spades', 'King of Spades', 'Queen of Spades', '6 of Clubs', '6 of Clubs', '5 of Diamonds', '5 of Diamonds', '7 of Diamonds', '7 of Hearts', '5 of Spades', '5 of Spades', '6 of Spades', '6 of Spades', '7 of Spades']
+2025-02-23 00:40:06,853 - INFO - Player 1 requesting Ace of Clubs from Player 2
+2025-02-23 00:40:06,854 - INFO - Turn passes to Player 2
+2025-02-23 00:40:08,860 - INFO - Showing feedback: Player does not have Ace of Clubs
+2025-02-23 00:40:16,782 - INFO - Opening request dialog for Player 2
+2025-02-23 00:40:16,783 - INFO - Available opponents: ['P1', 'P3', 'P5']
+2025-02-23 00:40:16,783 - INFO - Requestable cards: ['Jack of Clubs', 'Jack of Clubs', 'Jack of Diamonds', 'Jack of Diamonds', '9 of Spades', '9 of Spades', '9 of Spades', '6 of Clubs', '7 of Clubs', '7 of Clubs', '6 of Diamonds', '7 of Diamonds', '7 of Diamonds', '6 of Hearts']
+2025-02-23 00:40:26,221 - INFO - Player 2 requesting Jack of Clubs from Player 5
+2025-02-23 00:40:26,222 - INFO - Turn passes to Player 5
+2025-02-23 00:40:28,229 - INFO - Showing feedback: Player does not have Jack of Clubs
+2025-02-23 00:40:29,151 - INFO - Opening request dialog for Player 5
+2025-02-23 00:40:29,152 - INFO - Available opponents: ['P2', 'P4', 'P6']
+2025-02-23 00:40:29,152 - INFO - Requestable cards: ['Ace of Clubs', 'Queen of Clubs', 'Ace of Diamonds', 'King of Diamonds', 'Queen of Diamonds', 'Ace of Hearts', 'King of Hearts', 'King of Spades', 'Queen of Spades', '2 of Clubs', '3 of Clubs', '2 of Diamonds', '2 of Hearts', '3 of Hearts', '3 of Spades', '4 of Spades', '4 of Spades', '4 of Spades']
+2025-02-23 00:40:38,292 - INFO - Player 5 requesting Ace of Clubs from Player 4
+2025-02-23 00:40:38,293 - INFO - Found requested card in Player 4's hand
+2025-02-23 00:40:38,293 - INFO - Card transfer successful: Ace of Clubs moved to Player 5
+2025-02-23 00:40:39,310 - INFO - Player 5 gets another turn
+2025-02-23 00:40:41,314 - INFO - Showing feedback: Card Ace of Clubs transferred successfully!
+2025-02-23 00:46:24,374 - INFO - Opening request dialog for Player 1
+2025-02-23 00:46:24,376 - INFO - Available opponents: ['P2', 'P4', 'P6']
+2025-02-23 00:46:24,376 - INFO - Requestable cards: ['King of Clubs', 'King of Diamonds', 'King of Hearts', '10 of Spades', '10 of Spades', '10 of Spades', '3 of Diamonds', '6 of Diamonds', '3 of Hearts', '5 of Hearts', '5 of Hearts', '6 of Hearts', '3 of Spades', '5 of Spades', '5 of Spades', '6 of Spades']
+2025-02-23 00:46:26,020 - INFO - Player 1 requesting King of Clubs from Player 2
+2025-02-23 00:46:26,020 - INFO - Turn passes to Player 2
+2025-02-23 00:46:28,027 - INFO - Showing feedback: Player does not have King of Clubs
+2025-02-23 00:48:20,373 - INFO - Opening request dialog for Player 1
+2025-02-23 00:48:20,374 - INFO - Available opponents: ['P2', 'P4', 'P6']
+2025-02-23 00:48:20,374 - INFO - Requestable cards: ['King of Clubs', 'Queen of Clubs', 'Queen of Diamonds', 'King of Hearts', 'King of Spades', 'Queen of Spades', '2 of Clubs', '4 of Clubs', '5 of Clubs', '6 of Clubs', '7 of Clubs', '7 of Clubs', '2 of Diamonds', '4 of Diamonds', '5 of Diamonds', '5 of Hearts', '6 of Hearts', '7 of Hearts', '7 of Hearts', '2 of Spades', '4 of Spades', '6 of Spades']
+2025-02-23 00:48:35,601 - INFO - Player 1 requesting King of Clubs from Player 2
+2025-02-23 00:48:35,601 - INFO - Turn passes to Player 2
+2025-02-23 00:48:37,607 - INFO - Showing feedback: Player does not have King of Clubs
+2025-02-23 00:50:35,689 - INFO - Opening request dialog for Player 1
+2025-02-23 00:50:35,690 - INFO - Available opponents: ['P2', 'P4', 'P6']
+2025-02-23 00:50:35,690 - INFO - Requestable cards: ['Ace of Clubs', 'Jack of Clubs', '10 of Diamonds', '10 of Diamonds', '9 of Diamonds', 'Ace of Diamonds', 'Jack of Diamonds', '9 of Hearts', '10 of Spades', '10 of Spades', '9 of Spades', 'Ace of Spades', 'Jack of Spades', '5 of Clubs', '5 of Clubs', '4 of Diamonds', '5 of Diamonds', '5 of Diamonds', '4 of Hearts', '4 of Spades']
+2025-02-23 00:50:37,344 - INFO - Player 1 requesting Ace of Clubs from Player 2
+2025-02-23 00:50:37,344 - INFO - Turn passes to Player 2
+2025-02-23 00:50:39,352 - INFO - Showing feedback: Player does not have Ace of Clubs
+2025-02-23 00:50:53,067 - INFO - Opening request dialog for Player 2
+2025-02-23 00:50:53,067 - INFO - Available opponents: ['P1', 'P3', 'P5']
+2025-02-23 00:50:53,068 - INFO - Requestable cards: ['9 of Clubs', 'Ace of Clubs', 'Queen of Clubs', '9 of Diamonds', 'Ace of Diamonds', 'Jack of Diamonds', 'Jack of Diamonds', 'Queen of Diamonds', '9 of Hearts', 'Ace of Hearts', 'Jack of Hearts', 'Jack of Hearts', 'Queen of Spades', '2 of Clubs', '5 of Clubs', '6 of Clubs', '2 of Diamonds', '6 of Diamonds', '2 of Hearts', '5 of Hearts', '6 of Hearts', '5 of Spades']
+2025-02-23 00:51:10,999 - INFO - Player 2 requesting 9 of Clubs from Player 1
+2025-02-23 00:51:11,001 - INFO - Found requested card in Player 1's hand
+2025-02-23 00:51:11,001 - INFO - Card transfer successful: 9 of Clubs moved to Player 2
+2025-02-23 00:51:12,016 - INFO - Player 2 gets another turn
+2025-02-23 00:51:14,021 - INFO - Showing feedback: Card 9 of Clubs transferred successfully!

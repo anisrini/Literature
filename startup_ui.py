@@ -32,6 +32,7 @@ class StartupUI:
         
         # Player name inputs
         self.name_inputs = []
+        self.name_labels = []  # Add storage for labels
         self.default_names = [f"Player {i+1}" for i in range(8)]
         
         for i in range(8):
@@ -41,6 +42,7 @@ class StartupUI:
                 text=f"Player {i+1}:",
                 manager=self.ui_manager
             )
+            self.name_labels.append(label)  # Store the label
             
             entry = pygame_gui.elements.UITextEntryLine(
                 relative_rect=pygame.Rect((160, y_pos), (200, 30)),
@@ -60,8 +62,14 @@ class StartupUI:
         
     def update_visible_inputs(self, player_count: str):
         num_players = int(player_count.split()[0])
-        for i, input in enumerate(self.name_inputs):
-            input.visible = i < num_players
+        for i in range(8):
+            # Hide/show both input and label
+            if i < num_players:
+                self.name_inputs[i].visible = True
+                self.name_labels[i].visible = True
+            else:
+                self.name_inputs[i].visible = False
+                self.name_labels[i].visible = False
             
     def run(self) -> Tuple[int, List[str]]:
         running = True

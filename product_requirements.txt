@@ -1,0 +1,62 @@
+Definitions:
+* A root card is a card that is part of a set.
+* A delcaration is when a player chooses to complete a set by declaring which players in their team have which cards of a specific set
+
+Team composition requirements:
+* There are two teams of three players each in a six player game, and two teams of four players each in an eight player game.
+* All odd players are on one team, and all even players are on the other team.
+
+Cards requirements:
+* There are 48 cards amongst the players the 2-7, 9, 10, Jack, Queen, King, and Ace for each suit
+* Each of them is part of a set
+* There are totally 8 sets
+* Each set has 6 cards 
+* The minor sets are 2 through 7 for each suit
+* The major sets are 9, 10, Jack, Queen, King, and Ace for each suit
+
+Game objective requirements:
+* The game ends when all the sets have been declared 
+* The team with the most sets wins
+* If the teams have the same number of sets, the game is a draw
+
+Gameplay rules requirements:
+* Any random player starts the game. 
+* In their turn, they can choose to declare a set or request another player for a card. 
+* They can only request this card if they have the root card of the set
+* If the player requested has the card, they automatically transfer it to the player requesting it. The next turn is with the requesting player again.
+* If the player requested doesn't have the card, it is now their turn.
+* To declare the set, they player must first declare which set they want to declare, and it has to be one with a root cards
+* To declare the set, the player must correctly select which players in his team have which cards of a specific set
+* If the player declares the set correctly, the cards are transferred to the team's deck, and the player who declared the set plays next
+* If the player declares the set incorrectly, there are two scenarios
+    * Scenario 1: If all the cards in the set were within the player's team, neither team wins the set and it is removed from the game
+    * Scenario 2: If the cards in the set were split between the teams, the team the player is not in wins the set and it is removed from the game
+* The game ends when all the sets have been declared
+* There are no cancallations of a decision once made (to request a card or declare a set)
+
+
+GUI requirements:
+* Color the player name text and draw a box around the player's hand in the same color, yellow for one team and blue for the other.
+* Display which player's turn it is.
+* Display which player requested the card.
+* Display which player gave the card.
+* When a card is transferred, add it to the receiver's deck
+* Display the number of sets each team has
+* Display the team that won the set
+* During a player's turn, provide them the options for:
+    * Declaring a set
+    * Requesting a card
+* When a player chooses to request a card, provide them:
+    * A dropdown menu to choose which player to request the card from
+    * A dropdown menu to choose which card to request
+* When a player chooses to declare a set, provide them:
+    * A dropdown menu to choose which set to declare
+    * A dropdown menu to choose which players in their team have which cards of the set
+    * A button to complete the declaration
+* Add animation effects for cards being transferred between players and sets being declared
+* Add sound effects for card transfers and set declarations
+* Update the current player text based on which player's turn it is
+* Add a button to restart the game
+* Add a button to quit the game
+* Only maintain the cards faced up for the player whose turn it currently is. For ther other players, keep the cards faced down
+    

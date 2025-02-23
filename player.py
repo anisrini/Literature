@@ -31,4 +31,19 @@ class Player:
             cards.append(f"│  {symbol}  │")
             cards.append(f"│   {rank:>2}│")
             cards.append(f"└─────┘")
-        return cards 
+        return cards
+
+    def has_root_card(self, set_name: str) -> bool:
+        """Check if player has a root card of the given set"""
+        for card in self.hand:
+            # A card is a root card if it's in the set being checked
+            if card.get_set() == set_name:
+                return True
+        return False
+
+    def get_set_cards(self, set_name: str) -> list:
+        """Get all cards from a specific set in player's hand"""
+        return [card for card in self.hand if card.get_set() == set_name]
+
+    def __str__(self):
+        return f"{self.name}'s hand: {', '.join(str(card) for card in self.hand)}" 
