@@ -54,11 +54,11 @@ class LiteratureGameGUI(FloatLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         logger.info("Initializing Literature Game GUI")
-        # self.sounds = {}  # Comment out sounds dictionary
+        self._update_scheduled = False  # Add flag to prevent multiple updates
         self._init_widgets()
         
-        # Start update loop for game state
-        Clock.schedule_interval(self.update_game_state, 1.0/30.0)  # 30 FPS updates
+        # Reduce update frequency to 10 FPS (was 30)
+        Clock.schedule_interval(self.update_game_state, 1.0/10.0)
     
     def _init_widgets(self):
         """Initialize all widgets"""
@@ -118,21 +118,39 @@ class LiteratureGameGUI(FloatLayout):
             
             # Update score panel
             if hasattr(self.ids, 'score_panel'):
-                self.update_score_panel()
+                self.ids.score_panel.game_state = value
+                self.ids.score_panel.update_scores(value)
     
     def update_game_state(self, dt):
         """Regular update of game state display"""
-        if self.game_state:
+        if self._update_scheduled or not self.game_state:
+            return
+        
+        try:
+            self._update_scheduled = True
+            
+            # Validate game state
+            if not hasattr(self.game_state, 'players') or not self.game_state.players:
+                logger.error("Invalid game state detected")
+                return
+                
+            # Verify all components exist
+            if not all(hasattr(self.ids, attr) for attr in ['game_table', 'score_panel']):
+                logger.error("Missing required UI components")
+                return
+            
             self.update_score_panel()
             self.update_game_table()
+            
+        except Exception as e:
+            logger.error(f"Error in game state update: {str(e)}")
+        finally:
+            self._update_scheduled = False
     
     def update_score_panel(self):
         """Update the score panel with current game state"""
-        if hasattr(self.ids, 'score_panel'):
-            score_panel = self.ids.score_panel
-            score_panel.team1_score.text = f'Team 1 Score: {self.game_state.team1_sets}'
-            score_panel.team2_score.text = f'Team 2 Score: {self.game_state.team2_sets}'
-            score_panel.current_turn.text = f'Current Turn: Player {self.game_state.current_turn + 1}'
+        if hasattr(self.ids, 'score_panel') and self.game_state:
+            self.ids.score_panel.update_scores(self.game_state)
     
     def update_game_table(self):
         """Update the game table display"""

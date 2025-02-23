@@ -62,13 +62,18 @@ class LiteratureApp(App):
         logger.debug(f"Dealing {cards_per_player} cards per player")
         deck.deal(players, cards_per_player)
         
+        # Log each player's hand
+        for player in players:
+            logger.debug(f"{player.name}'s hand: {', '.join(str(card) for card in player.hand)}")
+        
         # Initialize game state with players
         self.game_state = GameState(players)
+        logger.info("Game state initialized")
         
         # Create game screen
         game_screen = Screen(name='game')
         self.game_gui = LiteratureGameGUI()
-        self.game_gui.game_state = self.game_state  # Set the game state
+        self.game_gui.game_state = self.game_state
         game_screen.add_widget(self.game_gui)
         logger.debug("Game screen initialized")
         

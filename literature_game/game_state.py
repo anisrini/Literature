@@ -50,3 +50,22 @@ class GameState:
         # Determine if declaration was correct
         # Return appropriate result
         pass 
+
+    def __eq__(self, other):
+        """Compare game states"""
+        if not isinstance(other, GameState):
+            return False
+        
+        # Compare basic attributes
+        basic_equal = (self.current_turn == other.current_turn and
+                      self.team1_sets == other.team1_sets and
+                      self.team2_sets == other.team2_sets and
+                      self.game_phase == other.game_phase)
+        
+        # Compare player hands
+        hands_equal = all(
+            len(p1.hand) == len(p2.hand) and all(c1 == c2 for c1, c2 in zip(p1.hand, p2.hand))
+            for p1, p2 in zip(self.players, other.players)
+        )
+        
+        return basic_equal and hands_equal 

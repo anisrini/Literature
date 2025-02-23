@@ -1,12 +1,13 @@
-from kivy.uix.scatter import Scatter
+from kivy.uix.widget import Widget
 from kivy.graphics import Color, Rectangle, Line
 from kivy.core.text import Label as CoreLabel
 from kivy.metrics import dp
 import logging
+from kivy.clock import Clock
 
 logger = logging.getLogger(__name__)
 
-class Card(Scatter):
+class Card(Widget):
     """
     Represents a playing card widget in the UI.
     Handles the visual representation and interaction of a single card.
@@ -28,8 +29,9 @@ class Card(Scatter):
             'Spades': '♠'
         }
         
+        # Bind to position and size changes
         self.bind(pos=self._redraw, size=self._redraw)
-        self.draw_card()
+        Clock.schedule_once(self.draw_card, 0)  # Schedule initial draw
     
     def _redraw(self, *args):
         """Redraw card when position or size changes"""
