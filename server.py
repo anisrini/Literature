@@ -9,6 +9,7 @@ import json
 from flask import Flask, render_template, request, jsonify, send_from_directory
 from flask_socketio import SocketIO, emit
 import uuid
+from datetime import datetime
 
 # Configure logging
 logging.basicConfig(
@@ -81,7 +82,40 @@ def handle_request_card(data):
         emit('error', {'message': 'Game not found'})
         return
     
+    # Get players for log
+    requester = game.current_player
+    target = game.players[target_player_idx]
+    
+    # Add to action log
+    log_entry = {
+        'type': 'request',
+        'timestamp': datetime.now().strftime("%H:%M:%S"),
+        'requester': {
+            'name': requester.name,
+            'team': requester.team,
+            'is_human': not requester.is_bot
+        },
+        'target': {
+            'name': target.name,
+            'team': target.team
+        },
+        'card': {
+            'suit': suit,
+            'rank': rank
+        },
+        'success': False  # Will be updated after request
+    }
+    
+    # Process the request
     result = game.request_card(target_player_idx, suit, rank)
+    
+    # Update success status in log
+    log_entry['success'] = result
+    
+    # Send the log entry
+    emit('game_log', log_entry)
+    
+    # Send the updated game state
     emit('game_updated', get_game_state(game, game_id))
     
     # If it's now a bot's turn, handle that after a delay
@@ -121,8 +155,42 @@ def handle_bot_turn(game_id):
     # Wait a bit to simulate thinking
     socketio.sleep(1.5)
     
-    # Handle bot turn
-    game.handle_bot_turn()
+    # Get the bot to select a target and card (we need to capture these before the action)
+    bot = game.current_player
+    card = random.choice(bot.hand) if bot.hand else None
+    other_team = 1 if bot.team == 0 else 0
+    other_team_players = [p for p in game.players if p.team == other_team]
+    target = random.choice(other_team_players) if other_team_players else None
+    
+    if card and target:
+        # Create log entry
+        log_entry = {
+            'type': 'request',
+            'timestamp': datetime.now().strftime("%H:%M:%S"),
+            'requester': {
+                'name': bot.name,
+                'team': bot.team,
+                'is_human': False
+            },
+            'target': {
+                'name': target.name,
+                'team': target.team
+            },
+            'card': {
+                'suit': card.suit,
+                'rank': card.rank
+            },
+            'success': False  # Will be updated after request
+        }
+        
+        # Handle bot turn
+        result = game.handle_bot_turn()
+        
+        # Update success status in log
+        log_entry['success'] = result
+        
+        # Send the log entry
+        socketio.emit('game_log', log_entry)
     
     # Update game state
     socketio.emit('game_updated', get_game_state(game, game_id))

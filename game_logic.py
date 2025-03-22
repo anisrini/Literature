@@ -86,6 +86,13 @@ class Bot(Player):
             
         target_player = random.choice(other_team_players)
         
+        # Store the current request info for logging
+        game.last_request = {
+            'requester': self,
+            'target': target_player,
+            'card': card
+        }
+        
         # Create detailed message about the request
         request_message = f"{self.name} asks {target_player.name} for the {card.rank} of {card.suit}"
         game.game_message = request_message

@@ -81,6 +81,12 @@ function initSocketListeners() {
             updateAutoPlayButton(data.auto_play);
         }
     });
+    
+    socket.on('game_log', (entry) => {
+        if (gameState) {
+            addLogEntry(entry);
+        }
+    });
 }
 
 // Create a new game
@@ -330,4 +336,71 @@ function processNextBotTurn() {
 function returnToMenu() {
     showMenuScreen();
     gameState = null;
+}
+
+// Add a new log entry to the game log
+function addLogEntry(entry) {
+    const gameLog = document.getElementById('game-log');
+    
+    // Create log entry element
+    const logEntry = document.createElement('div');
+    logEntry.className = 'log-entry';
+    
+    // Add timestamp
+    const timestamp = document.createElement('span');
+    timestamp.className = 'log-timestamp';
+    timestamp.textContent = entry.timestamp;
+    logEntry.appendChild(timestamp);
+    
+    // Create message content
+    const message = document.createElement('div');
+    message.className = 'log-message';
+    
+    // Format requester name
+    const requesterTeamClass = entry.requester.team === 0 ? 'log-team-a' : 'log-team-b';
+    const requesterName = document.createElement('span');
+    requesterName.className = `log-player-name ${requesterTeamClass}`;
+    requesterName.textContent = entry.requester.name;
+    
+    // Format target name
+    const targetTeamClass = entry.target.team === 0 ? 'log-team-a' : 'log-team-b';
+    const targetName = document.createElement('span');
+    targetName.className = `log-player-name ${targetTeamClass}`;
+    targetName.textContent = entry.target.name;
+    
+    // Create message with visual card
+    message.appendChild(requesterName);
+    message.appendChild(document.createTextNode(' requested '));
+    
+    // Add visual card
+    const cardImg = document.createElement('img');
+    cardImg.className = 'log-card';
+    cardImg.src = `/assets/cards/${entry.card.suit.toLowerCase()}_${entry.card.rank.toLowerCase()}.png`;
+    cardImg.alt = `${entry.card.rank} of ${entry.card.suit}`;
+    cardImg.onerror = () => {
+        cardImg.remove();
+        message.appendChild(document.createTextNode(`${entry.card.rank} of ${entry.card.suit}`));
+    };
+    message.appendChild(cardImg);
+    
+    message.appendChild(document.createTextNode(' from '));
+    message.appendChild(targetName);
+    
+    // Add result
+    const resultText = entry.success ? ' and got it!' : ' but failed.';
+    message.appendChild(document.createTextNode(resultText));
+    
+    logEntry.appendChild(message);
+    
+    // Insert at the beginning (most recent at the top)
+    if (gameLog.firstChild) {
+        gameLog.insertBefore(logEntry, gameLog.firstChild);
+    } else {
+        gameLog.appendChild(logEntry);
+    }
+    
+    // Keep only the most recent two entries
+    while (gameLog.children.length > 2) {
+        gameLog.removeChild(gameLog.lastChild);
+    }
 }
