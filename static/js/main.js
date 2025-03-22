@@ -12,8 +12,6 @@ const menuStatus = document.getElementById('menu-status');
 const gameMessage = document.getElementById('game-message');
 const playerInfo = document.getElementById('player-info');
 const teamInfo = document.getElementById('team-info');
-const playersGrid = document.getElementById('players-grid');
-const cardsGrid = document.getElementById('cards-grid');
 const popupEl = document.getElementById('card-selection-popup');
 const cardFamilies = document.getElementById('card-families');
 
@@ -122,16 +120,18 @@ function updateGameDisplay() {
     // Update auto-play button
     updateAutoPlayButton(gameState.auto_play);
     
-    // Update players grid
-    updatePlayersGrid();
+    // Set up the main game board layout
+    updateMainBoardLayout();
     
-    // Update cards grid
+    // Update cards grid - this should happen AFTER we create the grid
     updateCardsGrid();
 }
 
-// Update the players grid - organize by teams in columns
-function updatePlayersGrid() {
-    playersGrid.innerHTML = '';
+// Set up the main board layout with teams on sides and cards in middle
+function updateMainBoardLayout() {
+    // Get the main content container
+    const mainContent = document.querySelector('.main-content');
+    mainContent.innerHTML = '';
     
     // Create team columns
     const teamAColumn = document.createElement('div');
@@ -151,24 +151,19 @@ function updatePlayersGrid() {
     teamBHeader.textContent = gameState.team_names[1];
     teamBColumn.appendChild(teamBHeader);
     
-    // Sort players by team and add to appropriate column
+    // Add players to team columns
     gameState.players.forEach(player => {
         const playerBtn = document.createElement('button');
         playerBtn.textContent = `${player.name}\n${player.card_count} cards`;
         playerBtn.className = 'player-button';
         
-        // Add classes based on player status
+        // Process based on team
         if (player.team === 0) {
             playerBtn.classList.add('team-a');
-            
-            // Add to team A column
             if (player.is_current) playerBtn.classList.add('current');
             if (player.is_human) playerBtn.classList.add('human');
-            
-            // Enable/disable based on can_request
             playerBtn.disabled = !player.can_request;
             
-            // Add click handler for requesting cards
             if (player.can_request) {
                 playerBtn.addEventListener('click', () => {
                     selectedPlayerIdx = player.index;
@@ -179,15 +174,10 @@ function updatePlayersGrid() {
             teamAColumn.appendChild(playerBtn);
         } else {
             playerBtn.classList.add('team-b');
-            
-            // Add to team B column
             if (player.is_current) playerBtn.classList.add('current');
             if (player.is_human) playerBtn.classList.add('human');
-            
-            // Enable/disable based on can_request
             playerBtn.disabled = !player.can_request;
             
-            // Add click handler for requesting cards
             if (player.can_request) {
                 playerBtn.addEventListener('click', () => {
                     selectedPlayerIdx = player.index;
@@ -199,13 +189,31 @@ function updatePlayersGrid() {
         }
     });
     
-    // Add columns to the grid
-    playersGrid.appendChild(teamAColumn);
-    playersGrid.appendChild(teamBColumn);
+    // Create cards container in the middle
+    const cardsContainer = document.createElement('div');
+    cardsContainer.className = 'cards-container';
+    
+    const cardsTitle = document.createElement('h3');
+    cardsTitle.textContent = 'Your Cards';
+    cardsContainer.appendChild(cardsTitle);
+    
+    const cardsGrid = document.createElement('div');
+    cardsGrid.id = 'cards-grid';
+    cardsGrid.className = 'cards-grid';
+    cardsContainer.appendChild(cardsGrid);
+    
+    // Add all elements to main content in the correct order
+    mainContent.appendChild(teamAColumn);
+    mainContent.appendChild(cardsContainer);
+    mainContent.appendChild(teamBColumn);
 }
 
 // Update the cards grid
 function updateCardsGrid() {
+    // Get the cards grid that was dynamically created
+    const cardsGrid = document.getElementById('cards-grid');
+    if (!cardsGrid) return; // Safety check
+    
     cardsGrid.innerHTML = '';
     
     // Sort cards by suit and rank
