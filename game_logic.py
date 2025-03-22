@@ -23,7 +23,8 @@ class Card:
     
     def get_family(self):
         """Get the card family (used for Literature game rules)"""
-        if self.rank in ['A', '2', '3', '4', '5', '6', '7']:
+        # Move Ace to high set, only 2-7 are in low sets now
+        if self.rank in ['2', '3', '4', '5', '6', '7']:
             return f"Low {self.suit}"
         else:
             return f"High {self.suit}"

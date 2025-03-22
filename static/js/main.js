@@ -250,8 +250,8 @@ function showCardSelectionPopup() {
     const humanCards = gameState.human_cards;
     
     humanCards.forEach(card => {
-        // Determine family (Low or High)
-        const isLow = ['A', '2', '3', '4', '5', '6', '7'].includes(card.rank);
+        // Determine family (Low or High) - Ace is now part of High
+        const isLow = ['2', '3', '4', '5', '6', '7'].includes(card.rank);
         const family = (isLow ? 'Low ' : 'High ') + card.suit;
         
         if (!families[family]) {
@@ -309,9 +309,10 @@ function showCardSelectionPopup() {
 function getAllCardsInFamily(familyTitle) {
     const [type, suit] = familyTitle.split(' ');
     const isLow = type === 'Low';
+    // Update the rank arrays - Ace moved to high group
     const ranks = isLow 
-        ? ['A', '2', '3', '4', '5', '6', '7']
-        : ['8', '9', '10', 'J', 'Q', 'K'];
+        ? ['2', '3', '4', '5', '6', '7']
+        : ['A', '8', '9', '10', 'J', 'Q', 'K'];
     
     return ranks.map(rank => ({ suit, rank }));
 }
