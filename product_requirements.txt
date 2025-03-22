@@ -1,62 +1,109 @@
 Definitions:
-* A root card is a card that is part of a set.
-* A delcaration is when a player chooses to complete a set by declaring which players in their team have which cards of a specific set
+* A root card is any card from a set that is in a player's hand.
+* A set is a collection of 6 cards that share common characteristics.
+* Minor sets contain cards 2-7 of the same suit (4 sets total).
+* Major sets contain 9, 10, Jack, Queen, King, and Ace of the same suit (4 sets total).
+* A declaration is when a player attempts to claim a complete set by identifying which players on their team hold specific cards.
 
 Team composition requirements:
-* There are two teams of three players each in a six player game, and two teams of four players each in an eight player game.
-* All odd players are on one team, and all even players are on the other team.
+* The game only supports 6 or 8 players, divided into two equal teams.
+* For 6 players: Two teams of three players each.
+* For 8 players: Two teams of four players each.
+* All odd-numbered players (1,3,5,7) form one team, and all even-numbered players (2,4,6,8) form the other team.
+* Players should alternate team membership when seated (odd-even-odd-even).
 
 Cards requirements:
-* There are 48 cards amongst the players the 2-7, 9, 10, Jack, Queen, King, and Ace for each suit
-* Each of them is part of a set
-* There are totally 8 sets
-* Each set has 6 cards 
-* The minor sets are 2 through 7 for each suit
-* The major sets are 9, 10, Jack, Queen, King, and Ace for each suit
+* A standard 52-card deck with 8s removed from all suits is used (48 cards total).
+* Card distribution:
+  * For 6 players: Each player receives 8 cards
+  * For 8 players: Each player receives 6 cards
+* Each card belongs to exactly one of 8 sets.
+* Each set has 6 cards.
+* The minor sets are 2 through 7 for each suit (Hearts, Diamonds, Clubs, Spades).
+* The major sets are 9, 10, Jack, Queen, King, and Ace for each suit (Hearts, Diamonds, Clubs, Spades).
 
 Game objective requirements:
-* The game ends when all the sets have been declared 
-* The team with the most sets wins
-* If the teams have the same number of sets, the game is a draw
+* The game ends when all the sets have been declared or removed from play.
+* The team with the most sets wins.
+* Each collected set counts as 1 point.
+* If the teams have the same number of sets, the game is a draw.
 
 Gameplay rules requirements:
-* Any random player starts the game. 
-* In their turn, they can choose to declare a set or request another player for a card. 
-* They can only request this card if they have the root card of the set
-* If the player requested has the card, they automatically transfer it to the player requesting it. The next turn is with the requesting player again.
-* If the player requested doesn't have the card, it is now their turn.
-* To declare the set, they player must first declare which set they want to declare, and it has to be one with a root cards
-* To declare the set, the player must correctly select which players in his team have which cards of a specific set
-* If the player declares the set correctly, the cards are transferred to the team's deck, and the player who declared the set plays next
-* If the player declares the set incorrectly, there are two scenarios
-    * Scenario 1: If all the cards in the set were within the player's team, neither team wins the set and it is removed from the game
-    * Scenario 2: If the cards in the set were split between the teams, the team the player is not in wins the set and it is removed from the game
-* The game ends when all the sets have been declared
-* There are no cancallations of a decision once made (to request a card or declare a set)
-
+* A randomly selected player starts the game.
+* Play proceeds clockwise.
+* On their turn, a player must choose exactly one of the following actions:
+  * Declare a set
+  * Request a specific card from a specific opponent
+* There is no passing or skipping turns.
+* Card requests:
+  * A player may only request cards from a set for which they have at least one card (a root card).
+  * Players can only request a specific card from a specific opponent.
+  * Players cannot request cards they already possess.
+  * Players cannot request cards from teammates.
+  * If the opponent has the requested card, they transfer it to the requester, who gets another turn.
+  * If the opponent does not have the requested card, the turn passes to that opponent. No cards are exchanged.
+* Set declarations:
+  * To declare a set, the player must first specify which set they are declaring.
+  * The player must have at least one card from the set they are declaring.
+  * The player must correctly identify which players on their team have each card in the set.
+  * If all cards are correctly identified, the set is awarded to the declaring team, all cards in the set are removed from play, and the declaring player takes another turn.
+  * If any card is incorrectly identified:
+    * Scenario 1: If all the cards in the set were within the player's team but incorrectly identified, the set is removed from play with no points awarded to either team.
+    * Scenario 2: If any card in the set is held by the opposing team, the set is awarded to the opposing team and removed from play.
+    * The declaring player's turn ends, and play passes to the next player in sequence.
+* Team communication:
+  * Players may not directly communicate about their specific cards with teammates.
+  * Strategic discussion about which opponent to ask is permitted, but without revealing card details.
+* The game ends when all the sets have been declared or removed from play.
+* There are no cancellations of a decision once made (to request a card or declare a set).
 
 GUI requirements:
-* Color the player name text and draw a box around the player's hand in the same color, yellow for one team and blue for the other.
-* Display which player's turn it is.
-* Display which player requested the card.
-* Display which player gave the card.
-* When a card is transferred, add it to the receiver's deck
-* Display the number of sets each team has
-* Display the team that won the set
-* During a player's turn, provide them the options for:
+* Visual design:
+  * Color the player name text and draw a box around the player's hand in the same color - yellow for odd-numbered players (Team 1) and blue for even-numbered players (Team 2).
+  * Highlight the current player's area to clearly indicate whose turn it is.
+  * Arrange cards in a fan pattern for better visibility.
+* Game state display:
+  * Prominently display which player's turn it is.
+  * Show a history of recent actions (e.g., "Player 1 requested 10 of Hearts from Player 2").
+  * Display which player requested a card and which player gave/didn't give the card.
+  * When a card is transferred, animate it moving to the receiver's hand.
+  * Display the number of sets each team has collected.
+  * When a set is declared, display which team won the set with appropriate feedback.
+  * Maintain a scrollable game log of all actions for reference.
+* Card display:
+  * Show card faces only for the current player whose turn it is.
+  * Show card backs for all other players to maintain hidden information.
+  * Sort cards by suit and rank for better organization.
+  * Use standard card imagery with clear suit and rank indicators.
+* Player action interface:
+  * During a player's turn, provide clear buttons for:
     * Declaring a set
     * Requesting a card
-* When a player chooses to request a card, provide them:
-    * A dropdown menu to choose which player to request the card from
-    * A dropdown menu to choose which card to request
-* When a player chooses to declare a set, provide them:
-    * A dropdown menu to choose which set to declare
-    * A dropdown menu to choose which players in their team have which cards of the set
-    * A button to complete the declaration
-* Add animation effects for cards being transferred between players and sets being declared
-* Add sound effects for card transfers and set declarations
-* Update the current player text based on which player's turn it is
-* Add a button to restart the game
-* Add a button to quit the game
-* Only maintain the cards faced up for the player whose turn it currently is. For ther other players, keep the cards faced down
+  * When a player chooses to request a card, provide:
+    * A dropdown menu to choose which player to request from (excluding teammates)
+    * A dropdown menu to choose which card to request (filtered to show only valid requests based on root cards)
+    * A confirmation button to finalize the request
+  * When a player chooses to declare a set, provide:
+    * A dropdown menu to choose which set to declare (limited to sets where player has at least one card)
+    * An interface to assign specific cards to teammates
+    * A confirmation button with appropriate warning about incorrect declarations
+* Feedback and effects:
+  * Add animation effects for cards being transferred between players
+  * Add animation effects for sets being declared and removed from play
+  * Add sound effects for card transfers, successful/failed requests, and set declarations
+  * Provide visual and audio feedback for successful/failed declarations
+* Game control:
+  * Update the current player indicator based on whose turn it is
+  * Add a button to restart the game with the same players
+  * Add a button to start a new game with different player configuration
+  * Add a button to quit the game
+  * Add settings for adjusting or disabling animations and sound effects
+* Accessibility:
+  * Support for colorblind modes
+  * Adjustable text sizes
+  * High contrast options
+  * Screen reader compatibility
+* Responsive design:
+  * Adapt the interface to different screen sizes and orientations
+  * Ensure playability on both desktop and tablet devices
     

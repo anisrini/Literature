@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Literature Card Game</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Literature Card Game</h1>
+        
+        {% if error %}
+        <div class="error-message">{{ error }}</div>
+        {% endif %}
+        
+        <div class="game-options">
+            <div class="option-box">
+                <h2>Create New Game</h2>
+                <form action="/create_game" method="post">
+                    <div class="form-group">
+                        <label for="player_count">Number of Players:</label>
+                        <select name="player_count" id="player_count">
+                            <option value="6">6 Players</option>
+                            <option value="8">8 Players</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create Game</button>
+                </form>
+                
+                <h3 class="option-divider">OR</h3>
+                
+                <h2>Play with Bots</h2>
+                <form action="/create_game_with_bots" method="post">
+                    <div class="form-group">
+                        <label for="real_players">Real Players:</label>
+                        <select name="real_players" id="real_players">
+                            <option value="1">1 (Just you)</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="total_players">Total Players:</label>
+                        <select name="total_players" id="total_players">
+                            <option value="6">6 Players</option>
+                            <option value="8">8 Players</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-success">Create Game with Bots</button>
+                </form>
+            </div>
+            
+            <div class="option-box">
+                <h2>Join Existing Game</h2>
+                <form action="/join_game" method="post">
+                    <div class="form-group">
+                        <label for="game_id">Game ID:</label>
+                        <input type="text" name="game_id" id="game_id" required>
+                    </div>
+                    <button type="submit" class="btn btn-secondary">Join Game</button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="rules">
+            <h2>Game Rules</h2>
+            <p>
+                Literature is a card game played with 2 teams. The goal is to collect complete sets of cards.
+            </p>
+            <p>
+                The game uses a standard 52-card deck with all 8s removed. Cards are grouped into 8 sets:
+                Low Hearts, High Hearts, Low Diamonds, High Diamonds, etc.
+            </p>
+            <button id="show-full-rules" class="btn btn-text">Show complete rules...</button>
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html> 
