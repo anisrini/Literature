@@ -1,92 +1,95 @@
+"""
+Card Image Downloader
+Downloads card images for the Literature Card Game
+"""
 import os
 import requests
-import shutil
-from PIL import Image
 import logging
+from PIL import Image, ImageDraw
 
-logger = logging.getLogger(__name__)
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(message)s')
+log = logging.getLogger(__name__)
 
-def ensure_directory(directory):
-    """Make sure the directory exists"""
-    if not os.path.exists(directory):
-        os.makedirs(directory)
+# Card suits and ranks
+SUITS = ['hearts', 'diamonds', 'clubs', 'spades']
+RANKS = ['a', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'j', 'q', 'k']
 
-def download_card_images(target_dir='static/images/cards'):
-    """Download card images from a public API"""
-    # Define output directory
-    output_dir = target_dir
-    ensure_directory(output_dir)
+# Base URL for downloading card images
+BASE_URL = "https://deckofcardsapi.com/static/img"
+
+def download_card_images():
+    """Download card images from the Deck of Cards API"""
+    output_dir = os.path.join('assets', 'cards')
+    os.makedirs(output_dir, exist_ok=True)
     
-    # Use the Deck of Cards API
-    base_url = "https://deckofcardsapi.com/static/img"
+    downloaded = 0
+    failed = 0
     
-    # We need cards 2-7, 9-A of all suits (no 8s)
-    suits = {
-        'hearts': 'H',
-        'diamonds': 'D', 
-        'clubs': 'C',
-        'spades': 'S'
-    }
-    
-    ranks = {
-        '2': '2', '3': '3', '4': '4', '5': '5', '6': '6', '7': '7',
-        '9': '9', '10': '0', 'jack': 'J', 'queen': 'Q', 'king': 'K', 'ace': 'A'
-    }
-    
-    # Download each card
-    cards_downloaded = 0
-    for rank_name, rank_code in ranks.items():
-        for suit_name, suit_code in suits.items():
-            # Format for the API is like "2H.png" for 2 of Hearts
-            # But their 10 is "0"
-            filename = f"{rank_code}{suit_code}.png"
-            target_filename = f"{rank_name}_of_{suit_name}.png" 
-            url = f"{base_url}/{filename}"
+    for suit in SUITS:
+        for rank in RANKS:
+            # Define the output filename
+            output_file = os.path.join(output_dir, f"{suit}_{rank}.png")
             
-            output_path = os.path.join(output_dir, target_filename)
-            
-            # Skip if already downloaded
-            if os.path.exists(output_path):
+            # Skip if the file already exists
+            if os.path.exists(output_file):
+                log.info(f"Image already exists: {output_file}")
+                downloaded += 1
                 continue
-                
+            
+            # Format for the API: for example 'AS' for Ace of Spades, '10H' for 10 of Hearts
+            suit_code = suit[0].upper()
+            rank_code = rank.upper() if rank != '10' else '10'
+            card_code = f"{rank_code}{suit_code}"
+            
+            # Download the image
+            url = f"{BASE_URL}/{card_code}.png"
+            log.info(f"Downloading {card_code} from {url}")
+            
             try:
                 response = requests.get(url, stream=True)
                 if response.status_code == 200:
-                    with open(output_path, 'wb') as f:
-                        shutil.copyfileobj(response.raw, f)
-                    logger.info(f"Downloaded {target_filename}")
-                    cards_downloaded += 1
+                    with open(output_file, 'wb') as f:
+                        for chunk in response.iter_content(1024):
+                            f.write(chunk)
+                    downloaded += 1
+                    log.info(f"Downloaded {card_code} to {output_file}")
                 else:
-                    logger.error(f"Failed to download {url}: {response.status_code}")
+                    log.error(f"Failed to download {card_code}: {response.status_code}")
+                    failed += 1
             except Exception as e:
-                logger.error(f"Error downloading {url}: {e}")
+                log.error(f"Error downloading {card_code}: {e}")
+                failed += 1
     
-    # Download card back
-    back_url = f"{base_url}/back.png"
-    back_path = os.path.join(output_dir, "card_back.png")
+    # Create a card back image
+    create_card_back_image(os.path.join(output_dir, "card_back.png"))
     
-    if not os.path.exists(back_path):
-        try:
-            response = requests.get(back_url, stream=True)
-            if response.status_code == 200:
-                with open(back_path, 'wb') as f:
-                    shutil.copyfileobj(response.raw, f)
-                logger.info("Downloaded card back")
-                cards_downloaded += 1
-            else:
-                logger.error(f"Failed to download card back: {response.status_code}")
-        except Exception as e:
-            logger.error(f"Error downloading card back: {e}")
+    log.info(f"Downloaded {downloaded} card images, {failed} failed")
+    return downloaded, failed
+
+def create_card_back_image(output_file):
+    """Create a simple card back image"""
+    if os.path.exists(output_file):
+        log.info(f"Card back image already exists: {output_file}")
+        return
     
-    logger.info(f"Downloaded {cards_downloaded} card images")
-    return cards_downloaded
+    try:
+        # Create a simple blue card back
+        img = Image.new('RGB', (140, 190), color=(30, 60, 180))
+        d = ImageDraw.Draw(img)
+        d.rectangle([(5, 5), (135, 185)], outline=(255, 255, 255), width=2)
+        
+        # Add some decoration
+        for i in range(0, 120, 20):
+            d.rectangle([(20 + i//4, 20 + i//4), (120 - i//4, 170 - i//4)], 
+                        outline=(200, 200, 250), width=1)
+        
+        img.save(output_file)
+        log.info(f"Created card back image: {output_file}")
+    except Exception as e:
+        log.error(f"Failed to create card back image: {e}")
 
 if __name__ == "__main__":
-    # Configure logging for direct execution
-    logging.basicConfig(
-        level=logging.INFO,
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-    )
-    
-    # Run the download script
-    download_card_images() 
+    log.info("Starting card image download")
+    download_card_images()
+    log.info("Card image download complete") 

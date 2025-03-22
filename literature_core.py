@@ -15,12 +15,69 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.clock import Clock
 from kivy.uix.popup import Popup
 from kivy.uix.scrollview import ScrollView
+from kivy.uix.image import Image
 from functools import partial
 from kivy.graphics import Color, Rectangle
 
 # Basic logging configuration - writes to console for immediate feedback
 logging.basicConfig(level=logging.INFO, format='%(message)s')
 log = logging.getLogger(__name__)
+
+# ===================== CARD IMAGE UTILITIES =====================
+
+def get_card_image_path(card):
+    """Get the path to a card image"""
+    suit = card.suit.lower()
+    rank = card.rank.lower()
+    
+    # Convert 10 to 10, but A to a, K to k, etc.
+    if rank not in ['10']:
+        rank = rank.lower()
+    
+    base_path = os.path.join('assets', 'cards')
+    image_path = os.path.join(base_path, f"{suit}_{rank}.png")
+    
+    # Check if the image exists
+    if os.path.exists(image_path):
+        return image_path
+    
+    # Fallback to a default card image
+    default_path = os.path.join(base_path, "card_back.png")
+    if os.path.exists(default_path):
+        return default_path
+    
+    # If no images available, return None and we'll use text instead
+    return None
+
+def ensure_card_images():
+    """Make sure we have at least some basic card images available"""
+    base_path = os.path.join('assets', 'cards')
+    os.makedirs(base_path, exist_ok=True)
+    
+    # Create a simple card back image if it doesn't exist
+    card_back_path = os.path.join(base_path, "card_back.png")
+    if not os.path.exists(card_back_path):
+        log.info(f"Creating basic card back image at {card_back_path}")
+        from PIL import Image, ImageDraw
+        
+        try:
+            # Create a simple blue card back
+            img = Image.new('RGB', (100, 140), color=(30, 60, 180))
+            d = ImageDraw.Draw(img)
+            d.rectangle([(5, 5), (95, 135)], outline=(255, 255, 255), width=2)
+            img.save(card_back_path)
+        except Exception as e:
+            log.error(f"Failed to create card back image: {e}")
+    
+    # Check and log which card images are available
+    found_images = 0
+    for suit in Card.SUITS:
+        for rank in Card.RANKS:
+            card = Card(suit, rank)
+            if get_card_image_path(card) and get_card_image_path(card) != card_back_path:
+                found_images += 1
+    
+    log.info(f"Found {found_images} card images out of 52 possible cards")
 
 # ===================== GAME CLASSES =====================
 
@@ -45,6 +102,48 @@ class Card:
             return f"Low {self.suit}"
         else:
             return f"High {self.suit}"
+
+class CardWidget(BoxLayout):
+    """Widget to display a card with image or text fallback"""
+    def __init__(self, card, **kwargs):
+        super().__init__(**kwargs)
+        self.card = card
+        self.orientation = 'vertical'
+        self.size_hint = (None, None)
+        self.size = (100, 150)
+        self.padding = 5
+        
+        # Try to load card image
+        image_path = get_card_image_path(card)
+        
+        if image_path:
+            # We have an image, show that
+            self.image = Image(source=image_path, size_hint=(1, 0.9))
+            self.add_widget(self.image)
+            
+            # Add small label below
+            self.label = Label(
+                text=str(card),
+                size_hint=(1, 0.1),
+                font_size='10sp',
+                color=(0.9, 0.9, 0.9, 0.7)
+            )
+            self.add_widget(self.label)
+        else:
+            # No image, use text-based display
+            self.label = Label(
+                text=str(card),
+                size_hint=(1, 1),
+                font_size='14sp'
+            )
+            
+            # Add color based on suit
+            if card.suit == 'Hearts' or card.suit == 'Diamonds':
+                self.label.color = (0.8, 0.1, 0.1, 1)  # Red for hearts/diamonds
+            else:
+                self.label.color = (0.1, 0.1, 0.1, 1)  # Black for clubs/spades
+                
+            self.add_widget(self.label)
 
 class Player:
     """A player with a hand of cards"""
@@ -570,13 +669,8 @@ class GamePlayScreen(Screen):
         sorted_cards = sorted(human.hand, key=lambda c: (c.suit, Card.RANKS.index(c.rank)))
         
         for card in sorted_cards:
-            card_btn = Button(
-                text=str(card),
-                background_color=(0.9, 0.9, 1, 1),
-                size_hint_y=None,
-                height=50
-            )
-            self.cards_grid.add_widget(card_btn)
+            card_widget = CardWidget(card)
+            self.cards_grid.add_widget(card_widget)
         
         # Update players grid
         self.players_grid.clear_widgets()
@@ -670,6 +764,9 @@ class LiteratureGame(App):
         """Build the application UI"""
         log.info("Building Literature Card Game")
         
+        # Ensure we have card images
+        ensure_card_images()
+        
         # Initialize game state
         self.game = None
         self.current_game_id = None
@@ -705,6 +802,7 @@ if __name__ == "__main__":
     try:
         # Create asset directories
         os.makedirs('assets', exist_ok=True)
+        os.makedirs('assets/cards', exist_ok=True)
         
         # Start the application
         log.info("Starting Literature Card Game")
