@@ -1,0 +1,142 @@
+2025-03-22 10:04:37,937 - utils.card_downloader - INFO - Image already exists: assets/cards/hearts_a.png
+2025-03-22 10:04:37,937 - utils.card_downloader - INFO - Image already exists: assets/cards/hearts_2.png
+2025-03-22 10:04:37,937 - utils.card_downloader - INFO - Image already exists: assets/cards/hearts_3.png
+2025-03-22 10:04:37,937 - utils.card_downloader - INFO - Image already exists: assets/cards/hearts_4.png
+2025-03-22 10:04:37,937 - utils.card_downloader - INFO - Image already exists: assets/cards/hearts_5.png
+2025-03-22 10:04:37,937 - utils.card_downloader - INFO - Image already exists: assets/cards/hearts_6.png
+2025-03-22 10:04:37,937 - utils.card_downloader - INFO - Image already exists: assets/cards/hearts_7.png
+2025-03-22 10:04:37,937 - utils.card_downloader - INFO - Image already exists: assets/cards/hearts_8.png
+2025-03-22 10:04:37,937 - utils.card_downloader - INFO - Image already exists: assets/cards/hearts_9.png
+2025-03-22 10:04:37,937 - utils.card_downloader - INFO - Downloading 10H from https://deckofcardsapi.com/static/img/10H.png
+2025-03-22 10:04:38,504 - utils.card_downloader - ERROR - Failed to download 10H: 404
+2025-03-22 10:04:38,505 - utils.card_downloader - INFO - Image already exists: assets/cards/hearts_j.png
+2025-03-22 10:04:38,505 - utils.card_downloader - INFO - Image already exists: assets/cards/hearts_q.png
+2025-03-22 10:04:38,505 - utils.card_downloader - INFO - Image already exists: assets/cards/hearts_k.png
+2025-03-22 10:04:38,505 - utils.card_downloader - INFO - Image already exists: assets/cards/diamonds_a.png
+2025-03-22 10:04:38,505 - utils.card_downloader - INFO - Image already exists: assets/cards/diamonds_2.png
+2025-03-22 10:04:38,505 - utils.card_downloader - INFO - Image already exists: assets/cards/diamonds_3.png
+2025-03-22 10:04:38,505 - utils.card_downloader - INFO - Image already exists: assets/cards/diamonds_4.png
+2025-03-22 10:04:38,505 - utils.card_downloader - INFO - Image already exists: assets/cards/diamonds_5.png
+2025-03-22 10:04:38,505 - utils.card_downloader - INFO - Image already exists: assets/cards/diamonds_6.png
+2025-03-22 10:04:38,505 - utils.card_downloader - INFO - Image already exists: assets/cards/diamonds_7.png
+2025-03-22 10:04:38,505 - utils.card_downloader - INFO - Image already exists: assets/cards/diamonds_8.png
+2025-03-22 10:04:38,505 - utils.card_downloader - INFO - Image already exists: assets/cards/diamonds_9.png
+2025-03-22 10:04:38,505 - utils.card_downloader - INFO - Downloading 10D from https://deckofcardsapi.com/static/img/10D.png
+2025-03-22 10:04:38,863 - utils.card_downloader - ERROR - Failed to download 10D: 404
+2025-03-22 10:04:38,864 - utils.card_downloader - INFO - Image already exists: assets/cards/diamonds_j.png
+2025-03-22 10:04:38,864 - utils.card_downloader - INFO - Image already exists: assets/cards/diamonds_q.png
+2025-03-22 10:04:38,864 - utils.card_downloader - INFO - Image already exists: assets/cards/diamonds_k.png
+2025-03-22 10:04:38,864 - utils.card_downloader - INFO - Image already exists: assets/cards/clubs_a.png
+2025-03-22 10:04:38,864 - utils.card_downloader - INFO - Image already exists: assets/cards/clubs_2.png
+2025-03-22 10:04:38,864 - utils.card_downloader - INFO - Image already exists: assets/cards/clubs_3.png
+2025-03-22 10:04:38,864 - utils.card_downloader - INFO - Image already exists: assets/cards/clubs_4.png
+2025-03-22 10:04:38,864 - utils.card_downloader - INFO - Image already exists: assets/cards/clubs_5.png
+2025-03-22 10:04:38,864 - utils.card_downloader - INFO - Image already exists: assets/cards/clubs_6.png
+2025-03-22 10:04:38,864 - utils.card_downloader - INFO - Image already exists: assets/cards/clubs_7.png
+2025-03-22 10:04:38,865 - utils.card_downloader - INFO - Image already exists: assets/cards/clubs_8.png
+2025-03-22 10:04:38,865 - utils.card_downloader - INFO - Image already exists: assets/cards/clubs_9.png
+2025-03-22 10:04:38,865 - utils.card_downloader - INFO - Downloading 10C from https://deckofcardsapi.com/static/img/10C.png
+2025-03-22 10:04:39,259 - utils.card_downloader - ERROR - Failed to download 10C: 404
+2025-03-22 10:04:39,259 - utils.card_downloader - INFO - Image already exists: assets/cards/clubs_j.png
+2025-03-22 10:04:39,259 - utils.card_downloader - INFO - Image already exists: assets/cards/clubs_q.png
+2025-03-22 10:04:39,259 - utils.card_downloader - INFO - Image already exists: assets/cards/clubs_k.png
+2025-03-22 10:04:39,259 - utils.card_downloader - INFO - Image already exists: assets/cards/spades_a.png
+2025-03-22 10:04:39,260 - utils.card_downloader - INFO - Image already exists: assets/cards/spades_2.png
+2025-03-22 10:04:39,260 - utils.card_downloader - INFO - Image already exists: assets/cards/spades_3.png
+2025-03-22 10:04:39,260 - utils.card_downloader - INFO - Image already exists: assets/cards/spades_4.png
+2025-03-22 10:04:39,260 - utils.card_downloader - INFO - Image already exists: assets/cards/spades_5.png
+2025-03-22 10:04:39,260 - utils.card_downloader - INFO - Image already exists: assets/cards/spades_6.png
+2025-03-22 10:04:39,260 - utils.card_downloader - INFO - Image already exists: assets/cards/spades_7.png
+2025-03-22 10:04:39,260 - utils.card_downloader - INFO - Image already exists: assets/cards/spades_8.png
+2025-03-22 10:04:39,260 - utils.card_downloader - INFO - Image already exists: assets/cards/spades_9.png
+2025-03-22 10:04:39,260 - utils.card_downloader - INFO - Downloading 10S from https://deckofcardsapi.com/static/img/10S.png
+2025-03-22 10:04:39,733 - utils.card_downloader - ERROR - Failed to download 10S: 404
+2025-03-22 10:04:39,733 - utils.card_downloader - INFO - Image already exists: assets/cards/spades_j.png
+2025-03-22 10:04:39,733 - utils.card_downloader - INFO - Image already exists: assets/cards/spades_q.png
+2025-03-22 10:04:39,733 - utils.card_downloader - INFO - Image already exists: assets/cards/spades_k.png
+2025-03-22 10:04:39,733 - utils.card_downloader - INFO - Card back image already exists: assets/cards/card_back.png
+2025-03-22 10:04:39,733 - utils.card_downloader - INFO - Downloaded 48 card images, 4 failed
+2025-03-22 10:04:39,736 - __main__ - INFO - Starting Literature Card Game Web Server
+2025-03-22 10:04:39,760 - werkzeug - INFO -  * Restarting with stat
+2025-03-22 10:04:39,950 - utils.card_downloader - INFO - Image already exists: assets/cards/hearts_a.png
+2025-03-22 10:04:39,950 - utils.card_downloader - INFO - Image already exists: assets/cards/hearts_2.png
+2025-03-22 10:04:39,950 - utils.card_downloader - INFO - Image already exists: assets/cards/hearts_3.png
+2025-03-22 10:04:39,950 - utils.card_downloader - INFO - Image already exists: assets/cards/hearts_4.png
+2025-03-22 10:04:39,950 - utils.card_downloader - INFO - Image already exists: assets/cards/hearts_5.png
+2025-03-22 10:04:39,950 - utils.card_downloader - INFO - Image already exists: assets/cards/hearts_6.png
+2025-03-22 10:04:39,950 - utils.card_downloader - INFO - Image already exists: assets/cards/hearts_7.png
+2025-03-22 10:04:39,950 - utils.card_downloader - INFO - Image already exists: assets/cards/hearts_8.png
+2025-03-22 10:04:39,950 - utils.card_downloader - INFO - Image already exists: assets/cards/hearts_9.png
+2025-03-22 10:04:39,950 - utils.card_downloader - INFO - Downloading 10H from https://deckofcardsapi.com/static/img/10H.png
+2025-03-22 10:04:40,027 - utils.card_downloader - ERROR - Failed to download 10H: 404
+2025-03-22 10:04:40,027 - utils.card_downloader - INFO - Image already exists: assets/cards/hearts_j.png
+2025-03-22 10:04:40,027 - utils.card_downloader - INFO - Image already exists: assets/cards/hearts_q.png
+2025-03-22 10:04:40,027 - utils.card_downloader - INFO - Image already exists: assets/cards/hearts_k.png
+2025-03-22 10:04:40,027 - utils.card_downloader - INFO - Image already exists: assets/cards/diamonds_a.png
+2025-03-22 10:04:40,027 - utils.card_downloader - INFO - Image already exists: assets/cards/diamonds_2.png
+2025-03-22 10:04:40,027 - utils.card_downloader - INFO - Image already exists: assets/cards/diamonds_3.png
+2025-03-22 10:04:40,027 - utils.card_downloader - INFO - Image already exists: assets/cards/diamonds_4.png
+2025-03-22 10:04:40,027 - utils.card_downloader - INFO - Image already exists: assets/cards/diamonds_5.png
+2025-03-22 10:04:40,027 - utils.card_downloader - INFO - Image already exists: assets/cards/diamonds_6.png
+2025-03-22 10:04:40,027 - utils.card_downloader - INFO - Image already exists: assets/cards/diamonds_7.png
+2025-03-22 10:04:40,027 - utils.card_downloader - INFO - Image already exists: assets/cards/diamonds_8.png
+2025-03-22 10:04:40,027 - utils.card_downloader - INFO - Image already exists: assets/cards/diamonds_9.png
+2025-03-22 10:04:40,027 - utils.card_downloader - INFO - Downloading 10D from https://deckofcardsapi.com/static/img/10D.png
+2025-03-22 10:04:40,093 - utils.card_downloader - ERROR - Failed to download 10D: 404
+2025-03-22 10:04:40,093 - utils.card_downloader - INFO - Image already exists: assets/cards/diamonds_j.png
+2025-03-22 10:04:40,093 - utils.card_downloader - INFO - Image already exists: assets/cards/diamonds_q.png
+2025-03-22 10:04:40,094 - utils.card_downloader - INFO - Image already exists: assets/cards/diamonds_k.png
+2025-03-22 10:04:40,094 - utils.card_downloader - INFO - Image already exists: assets/cards/clubs_a.png
+2025-03-22 10:04:40,094 - utils.card_downloader - INFO - Image already exists: assets/cards/clubs_2.png
+2025-03-22 10:04:40,094 - utils.card_downloader - INFO - Image already exists: assets/cards/clubs_3.png
+2025-03-22 10:04:40,094 - utils.card_downloader - INFO - Image already exists: assets/cards/clubs_4.png
+2025-03-22 10:04:40,094 - utils.card_downloader - INFO - Image already exists: assets/cards/clubs_5.png
+2025-03-22 10:04:40,094 - utils.card_downloader - INFO - Image already exists: assets/cards/clubs_6.png
+2025-03-22 10:04:40,094 - utils.card_downloader - INFO - Image already exists: assets/cards/clubs_7.png
+2025-03-22 10:04:40,094 - utils.card_downloader - INFO - Image already exists: assets/cards/clubs_8.png
+2025-03-22 10:04:40,094 - utils.card_downloader - INFO - Image already exists: assets/cards/clubs_9.png
+2025-03-22 10:04:40,094 - utils.card_downloader - INFO - Downloading 10C from https://deckofcardsapi.com/static/img/10C.png
+2025-03-22 10:04:40,181 - utils.card_downloader - ERROR - Failed to download 10C: 404
+2025-03-22 10:04:40,181 - utils.card_downloader - INFO - Image already exists: assets/cards/clubs_j.png
+2025-03-22 10:04:40,181 - utils.card_downloader - INFO - Image already exists: assets/cards/clubs_q.png
+2025-03-22 10:04:40,181 - utils.card_downloader - INFO - Image already exists: assets/cards/clubs_k.png
+2025-03-22 10:04:40,181 - utils.card_downloader - INFO - Image already exists: assets/cards/spades_a.png
+2025-03-22 10:04:40,181 - utils.card_downloader - INFO - Image already exists: assets/cards/spades_2.png
+2025-03-22 10:04:40,182 - utils.card_downloader - INFO - Image already exists: assets/cards/spades_3.png
+2025-03-22 10:04:40,182 - utils.card_downloader - INFO - Image already exists: assets/cards/spades_4.png
+2025-03-22 10:04:40,182 - utils.card_downloader - INFO - Image already exists: assets/cards/spades_5.png
+2025-03-22 10:04:40,182 - utils.card_downloader - INFO - Image already exists: assets/cards/spades_6.png
+2025-03-22 10:04:40,182 - utils.card_downloader - INFO - Image already exists: assets/cards/spades_7.png
+2025-03-22 10:04:40,182 - utils.card_downloader - INFO - Image already exists: assets/cards/spades_8.png
+2025-03-22 10:04:40,182 - utils.card_downloader - INFO - Image already exists: assets/cards/spades_9.png
+2025-03-22 10:04:40,182 - utils.card_downloader - INFO - Downloading 10S from https://deckofcardsapi.com/static/img/10S.png
+2025-03-22 10:04:40,253 - utils.card_downloader - ERROR - Failed to download 10S: 404
+2025-03-22 10:04:40,253 - utils.card_downloader - INFO - Image already exists: assets/cards/spades_j.png
+2025-03-22 10:04:40,253 - utils.card_downloader - INFO - Image already exists: assets/cards/spades_q.png
+2025-03-22 10:04:40,253 - utils.card_downloader - INFO - Image already exists: assets/cards/spades_k.png
+2025-03-22 10:04:40,254 - utils.card_downloader - INFO - Card back image already exists: assets/cards/card_back.png
+2025-03-22 10:04:40,254 - utils.card_downloader - INFO - Downloaded 48 card images, 4 failed
+2025-03-22 10:04:40,254 - __main__ - INFO - Starting Literature Card Game Web Server
+2025-03-22 10:04:40,276 - werkzeug - WARNING -  * Debugger is active!
+2025-03-22 10:04:40,287 - werkzeug - INFO -  * Debugger PIN: 129-322-287
+2025-03-22 10:05:09,130 - game_logic - INFO - Creating new game with 6 players (human is player 1)
+2025-03-22 10:05:09,131 - game_logic - INFO - Created and shuffled deck with 52 cards
+2025-03-22 10:05:09,132 - game_logic - INFO - Dealing 8 cards per player
+2025-03-22 10:05:09,132 - game_logic - INFO - Player 1 (You) has 8 cards (Team 1)
+2025-03-22 10:05:09,132 - game_logic - INFO - Bot 2 has 8 cards (Team 1)
+2025-03-22 10:05:09,132 - game_logic - INFO - Bot 3 has 8 cards (Team 1)
+2025-03-22 10:05:09,133 - game_logic - INFO - Bot 4 has 8 cards (Team 2)
+2025-03-22 10:05:09,133 - game_logic - INFO - Bot 5 has 8 cards (Team 2)
+2025-03-22 10:05:09,133 - game_logic - INFO - Bot 6 has 8 cards (Team 2)
+2025-03-22 10:05:09,134 - __main__ - INFO - Created game 4b73787b-48eb-4cbb-b3ff-fed1f6b80344 with 6 players
+2025-03-22 10:05:37,179 - game_logic - INFO - Player 1 (You) asks Bot 4 for 9 of Hearts
+2025-03-22 10:05:37,180 - game_logic - INFO - Next player: Bot 2
+2025-03-22 10:05:40,683 - game_logic - INFO - Bot Bot 2 is taking its turn
+2025-03-22 10:05:40,684 - game_logic - INFO - Bot 2 asks Bot 6 for the 7 of Clubs
+2025-03-22 10:05:40,684 - game_logic - INFO - Bot 6 doesn't have the 7 of Clubs
+2025-03-22 10:05:42,311 - game_logic - INFO - Next player: Bot 3
+2025-03-22 10:05:44,686 - game_logic - INFO - Next player: Bot 4
+2025-03-22 10:05:45,816 - game_logic - INFO - Bot Bot 4 is taking its turn
+2025-03-22 10:05:45,816 - game_logic - INFO - Bot 4 asks Player 1 (You) for the 7 of Diamonds
+2025-03-22 10:05:45,816 - game_logic - INFO - Player 1 (You) doesn't have the 7 of Diamonds
+2025-03-22 10:05:49,818 - game_logic - INFO - Next player: Bot 5

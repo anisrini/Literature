@@ -1,128 +1,211 @@
 """
-Literature Card Game - Server Component
-Handles game sessions and future network connectivity
+Literature Card Game - Web Server
+Runs the game logic and serves the web interface
 """
 import os
-import sys
-import logging
 import random
-from literature_core import Game, Card, Player, Bot
+import logging
+import json
+from flask import Flask, render_template, request, jsonify, send_from_directory
+from flask_socketio import SocketIO, emit
+import uuid
 
-# Configure server logging
+# Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('server.log'),
+        logging.FileHandler('web_server.log'),
         logging.StreamHandler()
     ]
 )
-logger = logging.getLogger(__name__)
+log = logging.getLogger(__name__)
 
-class GameServer:
-    """Manages game sessions"""
-    
-    def __init__(self):
-        """Initialize the game server"""
-        self.active_games = {}
-        self.next_game_id = 1
-        logger.info("Game server initialized")
-    
-    def create_game(self, player_count, human_player_idx=0):
-        """Create a new game and return its ID"""
-        game_id = self.next_game_id
-        self.next_game_id += 1
-        
-        try:
-            # Create a new game with human player and bots
-            self.active_games[game_id] = Game(player_count, human_player_idx)
-            logger.info(f"Created game #{game_id} with {player_count} players (human is player {human_player_idx+1})")
-            return game_id
-        except Exception as e:
-            logger.error(f"Failed to create game: {e}")
-            return None
-    
-    def get_game(self, game_id):
-        """Get a game by ID"""
-        if game_id in self.active_games:
-            return self.active_games[game_id]
-        logger.warning(f"Game #{game_id} not found")
-        return None
-    
-    def end_game(self, game_id):
-        """End a game session"""
-        if game_id in self.active_games:
-            del self.active_games[game_id]
-            logger.info(f"Game #{game_id} ended")
-            return True
-        logger.warning(f"Cannot end game #{game_id}: not found")
-        return False
-    
-    def request_card(self, game_id, from_player_idx, to_player_idx, suit, rank):
-        """Process a card request"""
-        game = self.get_game(game_id)
-        if not game:
-            return False
-            
-        # Implement request logic
-        return game.request_card(to_player_idx, suit, rank)
-    
-    def make_declaration(self, game_id, player_idx, family):
-        """Process a declaration"""
-        game = self.get_game(game_id)
-        if not game:
-            return False
-            
-        # Implement declaration logic
-        if hasattr(game, 'make_declaration'):
-            return game.make_declaration(family)
-        return False
+# Initialize Flask app
+app = Flask(__name__, 
+            static_folder='static',
+            template_folder='templates')
+app.config['SECRET_KEY'] = 'literature-game-secret'
+socketio = SocketIO(app)
 
-# Singleton server instance
-_server = None
+# Import the game logic
+from game_logic import Card, Player, Bot, Game
 
-def get_server():
-    """Get the singleton server instance"""
-    global _server
-    if _server is None:
-        _server = GameServer()
-    return _server
+# Store active games
+active_games = {}
 
-# Integration with literature_core.py
-if __name__ == "__main__":
+@app.route('/')
+def index():
+    """Serve the main game page"""
+    return render_template('index.html')
+
+@app.route('/assets/<path:path>')
+def send_assets(path):
+    """Serve card images and other assets"""
+    return send_from_directory('assets', path)
+
+@socketio.on('create_game')
+def handle_create_game(data):
+    """Create a new game with the specified number of players"""
     try:
-        logger.info("Starting Literature Card Game Server")
+        player_count = int(data.get('player_count', 6))
         
-        # Import and run the UI if in standalone mode
-        from literature_core import LiteratureGame
+        # Create game ID
+        game_id = str(uuid.uuid4())
         
-        # Create necessary directories
-        os.makedirs('assets', exist_ok=True)
-        os.makedirs('logs', exist_ok=True)
+        # Create new game
+        game = Game(player_count, human_player_idx=0)
+        active_games[game_id] = game
         
-        # Initialize server
-        server = get_server()
+        # Send initial game state
+        game_state = get_game_state(game, game_id)
+        emit('game_created', game_state)
         
-        # Start the UI application
-        app = LiteratureGame()
-        
-        # Modify the app's create_game to use the server
-        original_create_game = app.create_game
-        
-        def server_create_game(player_count):
-            game_id = server.create_game(player_count, human_player_idx=0)
-            if game_id:
-                app.game = server.get_game(game_id)
-                app.current_game_id = game_id
-                app.game_screen.update_display()
-                return True
-            return False
-        
-        app.create_game = server_create_game
-        
-        # Run the app
-        app.run()
-        
+        log.info(f"Created game {game_id} with {player_count} players")
+        return game_state
     except Exception as e:
-        logger.critical(f"Server error: {e}")
-        sys.exit(1) 
+        log.error(f"Error creating game: {e}")
+        emit('error', {'message': f"Failed to create game: {str(e)}"})
+        return None
+
+@socketio.on('request_card')
+def handle_request_card(data):
+    """Handle a card request from the human player"""
+    game_id = data.get('game_id')
+    target_player_idx = int(data.get('target_player_idx'))
+    suit = data.get('suit')
+    rank = data.get('rank')
+    
+    game = active_games.get(game_id)
+    if not game:
+        emit('error', {'message': 'Game not found'})
+        return
+    
+    result = game.request_card(target_player_idx, suit, rank)
+    emit('game_updated', get_game_state(game, game_id))
+    
+    # If it's now a bot's turn, handle that after a delay
+    if game.current_player.is_bot:
+        socketio.sleep(2)  # Wait 2 seconds before bot turn
+        handle_bot_turn(game_id)
+
+@socketio.on('next_player')
+def handle_next_player(data):
+    """Move to the next player's turn"""
+    game_id = data.get('game_id')
+    game = active_games.get(game_id)
+    if not game:
+        emit('error', {'message': 'Game not found'})
+        return
+    
+    game.next_player()
+    emit('game_updated', get_game_state(game, game_id))
+    
+    # If it's a bot's turn, handle that after a delay
+    if game.current_player.is_bot:
+        socketio.sleep(2)  # Wait 2 seconds before bot turn
+        handle_bot_turn(game_id)
+
+def handle_bot_turn(game_id):
+    """Handle a bot's turn"""
+    game = active_games.get(game_id)
+    if not game or not game.current_player.is_bot:
+        return
+    
+    # Send thinking message
+    socketio.emit('game_message', {
+        'game_id': game_id,
+        'message': f"{game.current_player.name} is thinking..."
+    })
+    
+    # Wait a bit to simulate thinking
+    socketio.sleep(1.5)
+    
+    # Handle bot turn
+    game.handle_bot_turn()
+    
+    # Update game state
+    socketio.emit('game_updated', get_game_state(game, game_id))
+    
+    # Move to next player after a delay
+    socketio.sleep(4)
+    game.next_player()
+    socketio.emit('game_updated', get_game_state(game, game_id))
+    
+    # If the next player is also a bot and auto-play is on
+    if game.current_player.is_bot and game.auto_play:
+        handle_bot_turn(game_id)
+
+@socketio.on('toggle_auto_play')
+def handle_toggle_auto_play(data):
+    """Toggle automatic bot turn processing"""
+    game_id = data.get('game_id')
+    auto_play = data.get('auto_play')
+    
+    game = active_games.get(game_id)
+    if not game:
+        emit('error', {'message': 'Game not found'})
+        return
+    
+    game.auto_play = auto_play
+    emit('auto_play_updated', {'game_id': game_id, 'auto_play': auto_play})
+    
+    # If auto-play is turned on and it's a bot's turn, start processing
+    if auto_play and game.current_player.is_bot:
+        handle_bot_turn(game_id)
+
+def get_game_state(game, game_id):
+    """Get the current game state to send to the client"""
+    human = game.human_player
+    current = game.current_player
+    
+    # Get human player's cards
+    human_cards = []
+    for card in human.hand:
+        human_cards.append({
+            'suit': card.suit,
+            'rank': card.rank,
+            'is_new': hasattr(game, 'received_card') and game.received_card and 
+                     game.received_card.suit == card.suit and game.received_card.rank == card.rank
+        })
+    
+    # Get player info
+    players = []
+    for i, player in enumerate(game.players):
+        players.append({
+            'index': i,
+            'name': player.name,
+            'is_bot': player.is_bot,
+            'team': player.team,
+            'card_count': len(player.hand),
+            'is_current': player == current,
+            'is_human': player == human,
+            'can_request': current == human and player != human and 
+                         game.can_request_from_player(human, player)
+        })
+    
+    return {
+        'game_id': game_id,
+        'human_cards': human_cards,
+        'players': players,
+        'current_player_idx': game.current_player_idx,
+        'human_player_idx': game.human_player_idx,
+        'game_message': game.game_message,
+        'team_names': game.team_names,
+        'auto_play': getattr(game, 'auto_play', False)
+    }
+
+if __name__ == '__main__':
+    # Ensure asset directories exist
+    os.makedirs('assets', exist_ok=True)
+    os.makedirs('assets/cards', exist_ok=True)
+    os.makedirs('static', exist_ok=True)
+    os.makedirs('templates', exist_ok=True)
+    
+    # Download card images if not present
+    from utils.card_downloader import download_card_images
+    download_card_images()
+    
+    # Start the server
+    log.info("Starting Literature Card Game Web Server")
+    socketio.run(app, debug=True) 

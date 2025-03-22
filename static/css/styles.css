@@ -1,0 +1,280 @@
+/* Global Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f8ff;
+    color: #333;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Screen Styles */
+.screen {
+    display: none;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.screen.active {
+    display: flex;
+}
+
+/* Menu Screen */
+#menu-screen {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.menu-options {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin: 40px 0;
+}
+
+.menu-button {
+    padding: 15px 30px;
+    font-size: 18px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.menu-button:hover {
+    background-color: #3e8e41;
+}
+
+.status-message {
+    margin-top: 20px;
+    padding: 10px;
+    color: #d32f2f;
+    font-weight: bold;
+}
+
+/* Game Screen */
+#game-screen {
+    gap: 15px;
+}
+
+.game-message {
+    padding: 15px;
+    background-color: #e8f5e9;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: #2e7d32;
+}
+
+.game-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.player-info, .team-info {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.main-content {
+    display: flex;
+    gap: 20px;
+    flex: 1;
+}
+
+/* Players Grid */
+.players-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    width: 30%;
+}
+
+.player-button {
+    padding: 10px;
+    text-align: center;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    height: 80px;
+}
+
+.player-button.team-a {
+    background-color: #bbdefb; /* Light blue */
+}
+
+.player-button.team-b {
+    background-color: #ffcdd2; /* Light red */
+}
+
+.player-button.current {
+    background-color: #c8e6c9; /* Light green */
+}
+
+.player-button.human {
+    background-color: #d1c4e9; /* Light purple */
+}
+
+.player-button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Cards Display */
+.cards-container {
+    width: 70%;
+}
+
+.cards-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    max-height: 60vh;
+    overflow-y: auto;
+    padding: 10px;
+    background-color: #e0f7fa;
+    border-radius: 5px;
+}
+
+.card {
+    width: 100px;
+    height: 140px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.card img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.card.highlight {
+    box-shadow: 0 0 15px 5px gold;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 15px 5px rgba(255,215,0,0.5); }
+    50% { box-shadow: 0 0 15px 5px rgba(255,215,0,1); }
+    100% { box-shadow: 0 0 15px 5px rgba(255,215,0,0.5); }
+}
+
+/* Bot Controls */
+.bot-controls {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.control-button {
+    padding: 10px 20px;
+    font-size: 14px;
+    background-color: #2196F3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    flex: 1;
+}
+
+#play-pause {
+    background-color: #f44336; /* Red when OFF */
+}
+
+#play-pause.active {
+    background-color: #4CAF50; /* Green when ON */
+}
+
+#next-bot {
+    background-color: #4CAF50;
+}
+
+#return-menu {
+    background-color: #607D8B;
+}
+
+/* Popup Styles */
+.popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.7);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.popup-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.card-families {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.card-family {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.family-title {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.card-option {
+    padding: 8px 15px;
+    background-color: #e1f5fe;
+    border: 1px solid #81d4fa;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.card-option:hover {
+    background-color: #b3e5fc;
+}
+
+.card-option.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.popup-button {
+    padding: 10px 20px;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+} 

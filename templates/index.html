@@ -4,79 +4,59 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Literature Card Game</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="static/css/styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>Literature Card Game</h1>
+        <!-- Main Menu Screen -->
+        <div id="menu-screen" class="screen active">
+            <h1>Literature Card Game</h1>
+            <div class="menu-options">
+                <button id="start-6-players" class="menu-button">Start 6-Player Game</button>
+                <button id="start-8-players" class="menu-button">Start 8-Player Game</button>
+            </div>
+            <div id="menu-status" class="status-message"></div>
+        </div>
         
-        {% if error %}
-        <div class="error-message">{{ error }}</div>
-        {% endif %}
-        
-        <div class="game-options">
-            <div class="option-box">
-                <h2>Create New Game</h2>
-                <form action="/create_game" method="post">
-                    <div class="form-group">
-                        <label for="player_count">Number of Players:</label>
-                        <select name="player_count" id="player_count">
-                            <option value="6">6 Players</option>
-                            <option value="8">8 Players</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Create Game</button>
-                </form>
-                
-                <h3 class="option-divider">OR</h3>
-                
-                <h2>Play with Bots</h2>
-                <form action="/create_game_with_bots" method="post">
-                    <div class="form-group">
-                        <label for="real_players">Real Players:</label>
-                        <select name="real_players" id="real_players">
-                            <option value="1">1 (Just you)</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="total_players">Total Players:</label>
-                        <select name="total_players" id="total_players">
-                            <option value="6">6 Players</option>
-                            <option value="8">8 Players</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="btn btn-success">Create Game with Bots</button>
-                </form>
+        <!-- Game Play Screen -->
+        <div id="game-screen" class="screen">
+            <div id="game-message" class="game-message">Welcome to Literature Card Game</div>
+            
+            <div class="game-info">
+                <div id="player-info" class="player-info">Current Player: You</div>
+                <div id="team-info" class="team-info">Teams: Team A vs Team B</div>
             </div>
             
-            <div class="option-box">
-                <h2>Join Existing Game</h2>
-                <form action="/join_game" method="post">
-                    <div class="form-group">
-                        <label for="game_id">Game ID:</label>
-                        <input type="text" name="game_id" id="game_id" required>
-                    </div>
-                    <button type="submit" class="btn btn-secondary">Join Game</button>
-                </form>
+            <div class="main-content">
+                <!-- Players Display -->
+                <div id="players-grid" class="players-grid"></div>
+                
+                <!-- Cards Display -->
+                <div class="cards-container">
+                    <h3>Your Cards</h3>
+                    <div id="cards-grid" class="cards-grid"></div>
+                </div>
+            </div>
+            
+            <div class="bot-controls">
+                <button id="play-pause" class="control-button">Auto Play: OFF</button>
+                <button id="next-bot" class="control-button">Process Next Bot Turn</button>
+                <button id="return-menu" class="control-button">Return to Menu</button>
             </div>
         </div>
         
-        <div class="rules">
-            <h2>Game Rules</h2>
-            <p>
-                Literature is a card game played with 2 teams. The goal is to collect complete sets of cards.
-            </p>
-            <p>
-                The game uses a standard 52-card deck with all 8s removed. Cards are grouped into 8 sets:
-                Low Hearts, High Hearts, Low Diamonds, High Diamonds, etc.
-            </p>
-            <button id="show-full-rules" class="btn btn-text">Show complete rules...</button>
+        <!-- Card Selection Popup (hidden initially) -->
+        <div id="card-selection-popup" class="popup">
+            <div class="popup-content">
+                <h3>Select a Card to Request</h3>
+                <div id="card-families" class="card-families"></div>
+                <button id="cancel-request" class="popup-button">Cancel</button>
+            </div>
         </div>
     </div>
     
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script src="static/js/main.js"></script>
 </body>
 </html> 
