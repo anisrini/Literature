@@ -316,27 +316,34 @@ class Game:
             return current
     
     def handle_bot_turn(self):
-        """Process a bot's turn"""
-        current = self.current_player
-        if current.is_bot:
-            # Bot takes its turn
-            success = current.take_turn(self)
-            if success:
-                self.game_message = f"{current.name} successfully got a card!"
-            else:
-                self.game_message = f"{current.name} failed to get a card."
-                
-            # Move to next player after a short delay
-            return True
-        return False
-    
+        """Let the current bot player take its turn"""
+        if not self.current_player.is_bot:
+            return False
+        
+        log.info(f"Bot {self.current_player.name} is taking its turn")
+        self.game_message = f"{self.current_player.name} is thinking..."
+        
+        # Clear message after a delay
+        time.sleep(0.5)  # Small delay to simulate thinking
+        
+        # Let the bot take its turn
+        result = self.current_player.take_turn(self)
+        
+        # Update game message with the result
+        if result:
+            self.game_message = f"{self.current_player.name} successfully got a card!"
+        else:
+            self.game_message = f"{self.current_player.name} didn't get a card."
+        
+        return result
+
     def request_card(self, target_player_idx, suit, rank):
         """Human player requests a card from another player"""
         # Verify it's the human's turn
         if self.current_player_idx != self.human_player_idx:
             self.game_message = "It's not your turn!"
             return False
-            
+        
         human = self.human_player
         target = self.players[target_player_idx]
         
@@ -344,12 +351,12 @@ class Game:
         if not self.can_request_from_player(human, target):
             self.game_message = f"You can only request cards from the other team!"
             return False
-            
+        
         # Verify the card request is valid (same family, don't have it)
         if not self.can_request_card(human, suit, rank):
             self.game_message = f"You can only request cards from families you already have!"
             return False
-            
+        
         log.info(f"{human.name} asks {target.name} for {rank} of {suit}")
         
         # Check if target has the card
@@ -364,7 +371,7 @@ class Game:
         self.game_message = f"{target.name} doesn't have that card"
         self.next_player()  # Move to next player after failed request
         return False
-    
+
     def make_declaration(self, family):
         """Make a declaration for a complete family of cards"""
         # TODO: Implement in a future update
@@ -624,24 +631,97 @@ class GamePlayScreen(Screen):
         
         layout.add_widget(controls)
         
-        self.add_widget(layout)
+        # Set auto-play to False initially - will require manual advancement
+        self.auto_play = False
         
-        # Schedule update to handle bot turns
-        Clock.schedule_interval(self.process_bot_turns, 2)
+        # Add the bot control panel
+        self.bot_controls = BoxLayout(orientation='horizontal', size_hint_y=0.1, spacing=10, padding=10)
+        
+        # Add a play/pause button
+        self.play_pause_btn = Button(
+            text="Auto Play: OFF", 
+            background_color=(0.8, 0.4, 0.4, 1),
+            size_hint_x=0.5
+        )
+        self.play_pause_btn.bind(on_release=self.toggle_auto_play)
+        self.bot_controls.add_widget(self.play_pause_btn)
+        
+        # Add a "Next Bot Turn" button for manual control
+        self.next_bot_btn = Button(
+            text="Process Next Bot Turn",
+            background_color=(0.4, 0.8, 0.4, 1),
+            size_hint_x=0.5
+        )
+        self.next_bot_btn.bind(on_release=self.process_single_bot_turn)
+        self.bot_controls.add_widget(self.next_bot_btn)
+        
+        # Add this to the main layout
+        layout.add_widget(self.bot_controls)
+        
+        # Start with slower interval
+        self.bot_turn_delay = 5.0  # 5 seconds between bot turns
+        Clock.schedule_interval(self.process_bot_turns, self.bot_turn_delay)
+        
+        self.add_widget(layout)
+    
+    def toggle_auto_play(self, instance):
+        """Toggle automatic bot turn processing"""
+        self.auto_play = not self.auto_play
+        if self.auto_play:
+            self.play_pause_btn.text = "Auto Play: ON"
+            self.play_pause_btn.background_color = (0.4, 0.8, 0.4, 1)  # Green
+        else:
+            self.play_pause_btn.text = "Auto Play: OFF"
+            self.play_pause_btn.background_color = (0.8, 0.4, 0.4, 1)  # Red
+        
+        # Update the game message
+        app = App.get_running_app()
+        if app.game:
+            if self.auto_play:
+                app.game.game_message = "Auto play enabled: bots will play automatically"
+            else:
+                app.game.game_message = "Manual mode: click 'Process Next Bot Turn' to advance"
+            self.game_message.text = app.game.game_message
+    
+    def process_single_bot_turn(self, instance):
+        """Process a single bot turn when clicked"""
+        app = App.get_running_app()
+        if not app.game:
+            return
+        
+        if app.game.current_player.is_bot:
+            # Show thinking message
+            app.game.game_message = f"{app.game.current_player.name} is thinking..."
+            self.game_message.text = app.game.game_message
+            self.update_display()
+            
+            # Schedule the actual bot turn with a slight delay to show the thinking
+            Clock.schedule_once(lambda dt: self.execute_bot_turn(), 1.0)
+        else:
+            app.game.game_message = "It's your turn! Select a player to request a card."
+            self.game_message.text = app.game.game_message
+    
+    def execute_bot_turn(self):
+        """Execute the actual bot turn after the thinking delay"""
+        app = App.get_running_app()
+        if not app.game or not app.game.current_player.is_bot:
+            return
+        
+        # Handle bot turn
+        result = app.game.handle_bot_turn()
+        self.update_display()
+        
+        # Schedule moving to next player with a longer delay
+        Clock.schedule_once(lambda dt: self.next_player(None), 3.0)  # 3 seconds to see the result
     
     def process_bot_turns(self, dt):
         """Process bot turns automatically on a timer"""
         app = App.get_running_app()
-        if not app.game:
+        if not app.game or not self.auto_play:
             return
-            
+        
         if app.game.current_player.is_bot:
-            # Handle bot turn
-            app.game.handle_bot_turn()
-            # Short delay then move to next player
-            Clock.schedule_once(lambda dt: self.next_player(None), 1)
-            # Update display
-            self.update_display()
+            self.process_single_bot_turn(None)
     
     def update_display(self):
         """Update display with current game state"""
