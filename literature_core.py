@@ -179,7 +179,9 @@ class Bot(Player):
         
         # Simple strategy: randomly ask another player for a card the bot has
         if not self.hand:
-            log.info(f"Bot {self.name} has no cards, skipping turn")
+            message = f"{self.name} has no cards, skipping turn"
+            game.game_message = message
+            log.info(message)
             return False
             
         # Choose a random card from hand
@@ -194,7 +196,10 @@ class Bot(Player):
             
         target_player = random.choice(other_team_players)
         
-        log.info(f"Bot {self.name} asks {target_player.name} for {card}")
+        # Create detailed message about the request
+        request_message = f"{self.name} asks {target_player.name} for the {card.rank} of {card.suit}"
+        game.game_message = request_message
+        log.info(request_message)
         
         # Check if target has the card
         if target_player.has_card(card.suit, card.rank):
@@ -202,10 +207,14 @@ class Bot(Player):
             target_card = target_player.remove_card(card.suit, card.rank)
             if target_card:
                 self.add_card(target_card)
-                log.info(f"Bot {self.name} got {target_card} from {target_player.name}")
+                result_message = f"SUCCESS! {self.name} got the {card.rank} of {card.suit} from {target_player.name}"
+                game.game_message = result_message
+                log.info(result_message)
                 return True
         
-        log.info(f"{target_player.name} doesn't have that card")
+        fail_message = f"{target_player.name} doesn't have the {card.rank} of {card.suit}"
+        game.game_message = fail_message
+        log.info(fail_message)
         return False
 
 class Game:
@@ -348,6 +357,9 @@ class Game:
             self.game_message = f"You can only request cards from families you already have!"
             return False
         
+        # Create a detailed message about the request
+        request_message = f"YOU asked {target.name} for the {rank} of {suit}"
+        self.game_message = request_message
         log.info(f"{human.name} asks {target.name} for {rank} of {suit}")
         
         # Check if target has the card
@@ -356,14 +368,16 @@ class Game:
             card = target.remove_card(suit, rank)
             if card:
                 human.add_card(card)
-                self.game_message = f"Success! You got {card} from {target.name}"
+                result_message = f"SUCCESS! You got the {rank} of {suit} from {target.name}"
+                self.game_message = result_message
                 
                 # Add a visual indicator for the new card
                 self.received_card = card
                 
                 return True
         
-        self.game_message = f"{target.name} doesn't have that card"
+        fail_message = f"{target.name} doesn't have the {rank} of {suit}"
+        self.game_message = fail_message
         self.next_player()  # Move to next player after failed request
         return False
 
@@ -547,11 +561,13 @@ class GamePlayScreen(Screen):
         # Main layout
         layout = BoxLayout(orientation='vertical', padding=15, spacing=10)
         
-        # Game message
+        # Game message display - larger, more prominent
         self.game_message = Label(
-            text="Waiting for game to start...",
-            font_size=18,
-            size_hint_y=0.1
+            text="Welcome to Literature Card Game",
+            size_hint_y=0.1,
+            font_size='24sp',  # Much larger font
+            color=(0.1, 0.6, 0.1, 1),  # Green color for better visibility
+            bold=True  # Make it bold
         )
         layout.add_widget(self.game_message)
         
@@ -702,12 +718,32 @@ class GamePlayScreen(Screen):
         if not app.game or not app.game.current_player.is_bot:
             return
         
-        # Handle bot turn
-        result = app.game.handle_bot_turn()
+        # Create a clear "thinking" message before action
+        bot_name = app.game.current_player.name
+        app.game.game_message = f"{bot_name} is thinking..."
+        self.game_message.text = app.game.game_message
         self.update_display()
         
-        # Schedule moving to next player with a longer delay
-        Clock.schedule_once(lambda dt: self.next_player(None), 3.0)  # 3 seconds to see the result
+        # Short delay to show thinking
+        Clock.schedule_once(lambda dt: self.perform_bot_action(), 1.5)
+
+    def perform_bot_action(self):
+        """Perform the bot's action and show results"""
+        app = App.get_running_app()
+        if not app.game or not app.game.current_player.is_bot:
+            return
+        
+        # Handle bot turn
+        result = app.game.handle_bot_turn()
+        
+        # Update display with the result
+        self.update_display()
+        
+        # Add a visual marker for where the action happened
+        # (This would need to be implemented in the UI, possibly highlighting the players involved)
+        
+        # Schedule moving to next player with a longer delay to read result
+        Clock.schedule_once(lambda dt: self.next_player(None), 4.0)  # 4 seconds to see the result
     
     def process_bot_turns(self, dt):
         """Process bot turns automatically on a timer"""
