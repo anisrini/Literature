@@ -117,18 +117,9 @@ class CardWidget(BoxLayout):
         image_path = get_card_image_path(card)
         
         if image_path:
-            # We have an image, show that
-            self.image = Image(source=image_path, size_hint=(1, 0.9))
+            # We have an image, show that (without text label)
+            self.image = Image(source=image_path, size_hint=(1, 1))
             self.add_widget(self.image)
-            
-            # Add small label below
-            self.label = Label(
-                text=str(card),
-                size_hint=(1, 0.1),
-                font_size='10sp',
-                color=(0.9, 0.9, 0.9, 0.7)
-            )
-            self.add_widget(self.label)
         else:
             # No image, use text-based display
             self.label = Label(
@@ -366,6 +357,10 @@ class Game:
             if card:
                 human.add_card(card)
                 self.game_message = f"Success! You got {card} from {target.name}"
+                
+                # Add a visual indicator for the new card
+                self.received_card = card
+                
                 return True
         
         self.game_message = f"{target.name} doesn't have that card"
@@ -750,6 +745,15 @@ class GamePlayScreen(Screen):
         
         for card in sorted_cards:
             card_widget = CardWidget(card)
+            
+            # Highlight newly received card if applicable
+            if hasattr(app.game, 'received_card') and app.game.received_card and \
+               card.suit == app.game.received_card.suit and card.rank == app.game.received_card.rank:
+                card_widget.canvas.before.add(Color(0.9, 0.9, 0.2, 0.5))  # Yellow highlight
+                card_widget.canvas.before.add(Rectangle(pos=card_widget.pos, size=card_widget.size))
+                # Clear the received card to avoid persistent highlighting
+                app.game.received_card = None
+            
             self.cards_grid.add_widget(card_widget)
         
         # Update players grid
