@@ -129,35 +129,79 @@ function updateGameDisplay() {
     updateCardsGrid();
 }
 
-// Update the players grid
+// Update the players grid - organize by teams in columns
 function updatePlayersGrid() {
     playersGrid.innerHTML = '';
     
+    // Create team columns
+    const teamAColumn = document.createElement('div');
+    teamAColumn.className = 'team-column team-a-column';
+    
+    const teamBColumn = document.createElement('div');
+    teamBColumn.className = 'team-column team-b-column';
+    
+    // Add team headers
+    const teamAHeader = document.createElement('div');
+    teamAHeader.className = 'team-header team-a';
+    teamAHeader.textContent = gameState.team_names[0];
+    teamAColumn.appendChild(teamAHeader);
+    
+    const teamBHeader = document.createElement('div');
+    teamBHeader.className = 'team-header team-b';
+    teamBHeader.textContent = gameState.team_names[1];
+    teamBColumn.appendChild(teamBHeader);
+    
+    // Sort players by team and add to appropriate column
     gameState.players.forEach(player => {
         const playerBtn = document.createElement('button');
-        playerBtn.textContent = `${player.name}\n${player.card_count} cards\nTeam ${player.team + 1}`;
+        playerBtn.textContent = `${player.name}\n${player.card_count} cards`;
         playerBtn.className = 'player-button';
         
         // Add classes based on player status
-        if (player.team === 0) playerBtn.classList.add('team-a');
-        else playerBtn.classList.add('team-b');
-        
-        if (player.is_current) playerBtn.classList.add('current');
-        if (player.is_human) playerBtn.classList.add('human');
-        
-        // Enable/disable based on can_request
-        playerBtn.disabled = !player.can_request;
-        
-        // Add click handler for requesting cards
-        if (player.can_request) {
-            playerBtn.addEventListener('click', () => {
-                selectedPlayerIdx = player.index;
-                showCardSelectionPopup();
-            });
+        if (player.team === 0) {
+            playerBtn.classList.add('team-a');
+            
+            // Add to team A column
+            if (player.is_current) playerBtn.classList.add('current');
+            if (player.is_human) playerBtn.classList.add('human');
+            
+            // Enable/disable based on can_request
+            playerBtn.disabled = !player.can_request;
+            
+            // Add click handler for requesting cards
+            if (player.can_request) {
+                playerBtn.addEventListener('click', () => {
+                    selectedPlayerIdx = player.index;
+                    showCardSelectionPopup();
+                });
+            }
+            
+            teamAColumn.appendChild(playerBtn);
+        } else {
+            playerBtn.classList.add('team-b');
+            
+            // Add to team B column
+            if (player.is_current) playerBtn.classList.add('current');
+            if (player.is_human) playerBtn.classList.add('human');
+            
+            // Enable/disable based on can_request
+            playerBtn.disabled = !player.can_request;
+            
+            // Add click handler for requesting cards
+            if (player.can_request) {
+                playerBtn.addEventListener('click', () => {
+                    selectedPlayerIdx = player.index;
+                    showCardSelectionPopup();
+                });
+            }
+            
+            teamBColumn.appendChild(playerBtn);
         }
-        
-        playersGrid.appendChild(playerBtn);
     });
+    
+    // Add columns to the grid
+    playersGrid.appendChild(teamAColumn);
+    playersGrid.appendChild(teamBColumn);
 }
 
 // Update the cards grid
