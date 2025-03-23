@@ -2156,3 +2156,19 @@
 2025-03-23 08:58:28,942 - game_logic - INFO - Bot 6 doesn't have the 3 of Diamonds
 2025-03-23 08:58:32,446 - game_logic - INFO - Bot 6 asks Player 1 (You) for the 4 of Spades
 2025-03-23 08:58:32,447 - game_logic - INFO - Player 1 (You) doesn't have the 4 of Spades
+2025-03-23 09:01:58,079 - __main__ - INFO - Starting Literature Card Game Web Server
+2025-03-23 09:01:58,098 - werkzeug - INFO -  * Restarting with stat
+2025-03-23 09:01:58,445 - __main__ - INFO - Starting Literature Card Game Web Server
+2025-03-23 09:01:58,460 - werkzeug - WARNING -  * Debugger is active!
+2025-03-23 09:01:58,469 - werkzeug - INFO -  * Debugger PIN: 129-322-287
+2025-03-23 09:02:06,334 - game_logic - INFO - Creating new game with 6 players (human is player 1)
+2025-03-23 09:02:06,334 - game_logic - INFO - Created and shuffled deck with 52 cards
+2025-03-23 09:02:06,335 - game_logic - INFO - Dealing 8 cards per player
+2025-03-23 09:02:06,335 - game_logic - INFO - Player 1 (You) has 8 cards (Team 1)
+2025-03-23 09:02:06,335 - game_logic - INFO - Bot 2 has 8 cards (Team 1)
+2025-03-23 09:02:06,335 - game_logic - INFO - Bot 3 has 8 cards (Team 1)
+2025-03-23 09:02:06,335 - game_logic - INFO - Bot 4 has 8 cards (Team 2)
+2025-03-23 09:02:06,335 - game_logic - INFO - Bot 5 has 8 cards (Team 2)
+2025-03-23 09:02:06,335 - game_logic - INFO - Bot 6 has 8 cards (Team 2)
+2025-03-23 09:02:06,336 - __main__ - INFO - Created game ad6eafea-f8e7-4743-b282-40c6f32fa88f with 6 players
+2025-03-23 09:02:11,478 - game_logic - INFO - Player 1 (You) asks Bot 5 for 6 of Diamonds

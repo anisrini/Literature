@@ -43,6 +43,9 @@ function initEventListeners() {
     
     // Popup buttons
     cancelRequestBtn.addEventListener('click', closeCardSelectionPopup);
+    
+    // Add keyboard navigation
+    document.addEventListener('keydown', handleKeyPress);
 }
 
 // Socket event listeners
@@ -535,4 +538,24 @@ function debugCardImageLoading() {
             testImg.src = paths[0];
         });
     });
+}
+
+// Handle keyboard navigation
+function handleKeyPress(event) {
+    // Only process when game is active
+    if (!gameState || !document.getElementById('game-screen').classList.contains('active')) {
+        return;
+    }
+    
+    // Right arrow key - process next bot turn
+    if (event.key === 'ArrowRight') {
+        processNextBotTurn();
+        event.preventDefault(); // Prevent default browser behavior (like scrolling)
+    }
+    
+    // Escape key - close popup if open
+    if (event.key === 'Escape') {
+        closeCardSelectionPopup();
+        event.preventDefault();
+    }
 }
