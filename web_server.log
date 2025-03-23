@@ -2172,3 +2172,26 @@
 2025-03-23 09:02:06,335 - game_logic - INFO - Bot 6 has 8 cards (Team 2)
 2025-03-23 09:02:06,336 - __main__ - INFO - Created game ad6eafea-f8e7-4743-b282-40c6f32fa88f with 6 players
 2025-03-23 09:02:11,478 - game_logic - INFO - Player 1 (You) asks Bot 5 for 6 of Diamonds
+2025-03-23 09:05:37,539 - werkzeug - INFO -  * Detected change in '/Users/ani/Projects/workspace/Literature/server.py', reloading
+2025-03-23 09:05:37,595 - werkzeug - INFO -  * Restarting with stat
+2025-03-23 09:05:38,105 - __main__ - INFO - Starting Literature Card Game Web Server
+2025-03-23 09:05:38,118 - werkzeug - WARNING -  * Debugger is active!
+2025-03-23 09:05:38,127 - werkzeug - INFO -  * Debugger PIN: 129-322-287
+2025-03-23 09:05:40,124 - __main__ - INFO - Starting Literature Card Game Web Server
+2025-03-23 09:05:40,137 - werkzeug - INFO -  * Restarting with stat
+2025-03-23 09:05:40,506 - __main__ - INFO - Starting Literature Card Game Web Server
+2025-03-23 09:05:40,523 - werkzeug - WARNING -  * Debugger is active!
+2025-03-23 09:05:40,533 - werkzeug - INFO -  * Debugger PIN: 129-322-287
+2025-03-23 09:05:44,828 - game_logic - INFO - Creating new game with 6 players (human is player 1)
+2025-03-23 09:05:44,830 - game_logic - INFO - Created and shuffled deck with 52 cards
+2025-03-23 09:05:44,831 - game_logic - INFO - Dealing 8 cards per player
+2025-03-23 09:05:44,831 - game_logic - INFO - Player 1 (You) has 8 cards (Team 1)
+2025-03-23 09:05:44,831 - game_logic - INFO - Bot 2 has 8 cards (Team 1)
+2025-03-23 09:05:44,832 - game_logic - INFO - Bot 3 has 8 cards (Team 1)
+2025-03-23 09:05:44,832 - game_logic - INFO - Bot 4 has 8 cards (Team 2)
+2025-03-23 09:05:44,832 - game_logic - INFO - Bot 5 has 8 cards (Team 2)
+2025-03-23 09:05:44,832 - game_logic - INFO - Bot 6 has 8 cards (Team 2)
+2025-03-23 09:05:44,832 - __main__ - INFO - Created game 69a14d41-61b9-482e-8d9a-e2c0cc0ebacc with 6 players
+2025-03-23 09:05:47,594 - game_logic - INFO - Player 1 (You) asks Bot 5 for 9 of Clubs
+2025-03-23 09:05:51,228 - game_logic - INFO - Bot 5 asks Player 1 (You) for the Q of Hearts
+2025-03-23 09:05:51,228 - game_logic - INFO - Player 1 (You) doesn't have the Q of Hearts

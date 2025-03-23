@@ -434,7 +434,8 @@ function processNextBotTurn() {
     
     // Request the server to process the next bot turn
     socket.emit('next_player', {
-        game_id: gameState.game_id
+        game_id: gameState.game_id,
+        force_bot_turn: true  // Add this parameter to force bot turn
     });
 }
 

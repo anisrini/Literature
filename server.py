@@ -126,20 +126,21 @@ def handle_request_card(data):
 def handle_next_player(data):
     """Move to the next player's turn"""
     game_id = data.get('game_id')
+    force_bot_turn = data.get('force_bot_turn', False)  # Add parameter to force bot turn
+    
     game = active_games.get(game_id)
     if not game:
         emit('error', {'message': 'Game not found'})
         return
     
-    # Don't automatically change turns, respect the turn management logic
-    # in the game mechanics (remove game.next_player() call)
-    
     # Just update the client about the current state
     emit('game_updated', get_game_state(game, game_id))
     
-    # If the current player is a bot and auto-play is on, process the bot turn
-    if game.current_player.is_bot and game.auto_play:
-        socketio.sleep(2)  # Wait 2 seconds before bot turn
+    # Process bot turn if either:
+    # 1. Auto-play is on AND current player is a bot
+    # 2. User clicked "Process Next Bot Turn" button (force_bot_turn is True)
+    if (game.current_player.is_bot and game.auto_play) or force_bot_turn:
+        socketio.sleep(1)  # Reduced delay for better responsiveness
         handle_bot_turn(game_id)
 
 def handle_bot_turn(game_id):
