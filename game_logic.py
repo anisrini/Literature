@@ -94,6 +94,9 @@ class Bot(Player):
             'card': card
         }
         
+        # Find the target player's index for turn management
+        target_player_idx = game.players.index(target_player)
+        
         # Create detailed message about the request
         request_message = f"{self.name} asks {target_player.name} for the {card.rank} of {card.suit}"
         game.game_message = request_message
@@ -108,11 +111,15 @@ class Bot(Player):
                 result_message = f"SUCCESS! {self.name} got the {card.rank} of {card.suit} from {target_player.name}"
                 game.game_message = result_message
                 log.info(result_message)
+                # Bot gets another turn on success
                 return True
         
         fail_message = f"{target_player.name} doesn't have the {card.rank} of {card.suit}"
         game.game_message = fail_message
         log.info(fail_message)
+        
+        # On failure, turn passes to the target player
+        game.current_player_idx = target_player_idx
         return False
 
 class Game:
@@ -208,16 +215,15 @@ class Game:
         return player.has_card_of_family(family)
     
     def handle_bot_turn(self):
-        """Let the current bot player take its turn"""
-        if not self.current_player.is_bot:
+        """Handle a bot's turn"""
+        if not self.current_player or not self.current_player.is_bot:
             return False
-            
-        log.info(f"Bot {self.current_player.name} is taking its turn")
-        self.game_message = f"{self.current_player.name} is thinking..."
         
-        # Let the bot take its turn
-        result = self.current_player.take_turn(self)
+        bot = self.current_player
+        result = bot.take_turn(self)
         
+        # If the bot's turn was successful, don't change players
+        # Otherwise, handle in the Bot.take_turn method
         return result
     
     def request_card(self, target_player_idx, suit, rank):
@@ -257,11 +263,14 @@ class Game:
                 # Add a visual indicator for the new card
                 self.received_card = card
                 
+                # Don't change turn on success - player gets another turn
                 return True
         
         fail_message = f"{target.name} doesn't have the {rank} of {suit}"
         self.game_message = fail_message
-        self.next_player()  # Move to next player after failed request
+        
+        # On failure, the turn passes to the player who was asked
+        self.current_player_idx = target_player_idx
         return False
     
     def make_declaration(self, family):

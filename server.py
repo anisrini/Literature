@@ -106,7 +106,7 @@ def handle_request_card(data):
         'success': False  # Will be updated after request
     }
     
-    # Process the request
+    # Process the request - note that this now handles the turn progression internally
     result = game.request_card(target_player_idx, suit, rank)
     
     # Update success status in log
@@ -118,9 +118,8 @@ def handle_request_card(data):
     # Send the updated game state
     emit('game_updated', get_game_state(game, game_id))
     
-    # If it's now a bot's turn, handle that after a delay
-    if game.current_player.is_bot:
-        socketio.sleep(2)  # Wait 2 seconds before bot turn
+    # If the next player is a bot and auto-play is on
+    if game.current_player.is_bot and game.auto_play:
         handle_bot_turn(game_id)
 
 @socketio.on('next_player')
@@ -183,7 +182,7 @@ def handle_bot_turn(game_id):
             'success': False  # Will be updated after request
         }
         
-        # Handle bot turn
+        # Handle bot turn - this now manages turn changes internally
         result = game.handle_bot_turn()
         
         # Update success status in log
@@ -195,13 +194,10 @@ def handle_bot_turn(game_id):
     # Update game state
     socketio.emit('game_updated', get_game_state(game, game_id))
     
-    # Move to next player after a delay
-    socketio.sleep(4)
-    game.next_player()
-    socketio.emit('game_updated', get_game_state(game, game_id))
-    
     # If the next player is also a bot and auto-play is on
     if game.current_player.is_bot and game.auto_play:
+        # Add a small delay for better user experience
+        socketio.sleep(2)
         handle_bot_turn(game_id)
 
 @socketio.on('toggle_auto_play')
