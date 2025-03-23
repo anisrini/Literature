@@ -141,6 +141,14 @@ function updateMainBoardLayout() {
     const teamBColumn = document.createElement('div');
     teamBColumn.className = 'team-column team-b-column';
     
+    // Determine current team and highlight that column
+    const currentPlayer = gameState.players.find(p => p.index === gameState.current_player_idx);
+    if (currentPlayer.team === 0) {
+        teamAColumn.classList.add('active');
+    } else {
+        teamBColumn.classList.add('active');
+    }
+    
     // Add team headers
     const teamAHeader = document.createElement('div');
     teamAHeader.className = 'team-header team-a';

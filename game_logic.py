@@ -186,7 +186,8 @@ class Game:
         return self.players[self.human_player_idx]
     
     def next_player(self):
-        """Move to the next player's turn"""
+        """Move to the next player's turn. Should only be used when 
+        starting a new round, not after each card request."""
         self.current_player_idx = (self.current_player_idx + 1) % len(self.players)
         player = self.current_player
         

@@ -131,11 +131,14 @@ def handle_next_player(data):
         emit('error', {'message': 'Game not found'})
         return
     
-    game.next_player()
+    # Don't automatically change turns, respect the turn management logic
+    # in the game mechanics (remove game.next_player() call)
+    
+    # Just update the client about the current state
     emit('game_updated', get_game_state(game, game_id))
     
-    # If it's a bot's turn, handle that after a delay
-    if game.current_player.is_bot:
+    # If the current player is a bot and auto-play is on, process the bot turn
+    if game.current_player.is_bot and game.auto_play:
         socketio.sleep(2)  # Wait 2 seconds before bot turn
         handle_bot_turn(game_id)
 
@@ -194,7 +197,7 @@ def handle_bot_turn(game_id):
     # Update game state
     socketio.emit('game_updated', get_game_state(game, game_id))
     
-    # If the next player is also a bot and auto-play is on
+    # Check if the CURRENT player is a bot (might be different after turn)
     if game.current_player.is_bot and game.auto_play:
         # Add a small delay for better user experience
         socketio.sleep(2)

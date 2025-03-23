@@ -6,6 +6,7 @@ import os
 import requests
 import logging
 from PIL import Image, ImageDraw
+import urllib.request
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(message)s')
@@ -19,53 +20,40 @@ RANKS = ['a', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'j', 'q', 'k']
 BASE_URL = "https://deckofcardsapi.com/static/img"
 
 def download_card_images():
-    """Download card images from the Deck of Cards API"""
-    output_dir = os.path.join('assets', 'cards')
-    os.makedirs(output_dir, exist_ok=True)
+    """Download card images if they don't exist"""
+    # Define the URL pattern for the card images
+    base_url = "https://deckofcardsapi.com/static/img/"
     
-    downloaded = 0
-    failed = 0
+    # Map our suit and rank names to the ones used in the API
+    suit_map = {'Hearts': 'H', 'Diamonds': 'D', 'Clubs': 'C', 'Spades': 'S'}
+    rank_map = {'A': 'A', '2': '2', '3': '3', '4': '4', '5': '5', '6': '6', 
+                '7': '7', '8': '8', '9': '9', '10': '0', 'J': 'J', 'Q': 'Q', 'K': 'K'}
     
-    for suit in SUITS:
-        for rank in RANKS:
-            # Define the output filename
-            output_file = os.path.join(output_dir, f"{suit}_{rank}.png")
+    # Download each card image
+    for suit in ['Hearts', 'Diamonds', 'Clubs', 'Spades']:
+        for rank in ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']:
+            # The API uses a different naming convention than our game
+            api_code = f"{rank_map[rank]}{suit_map[suit]}"
+            api_url = f"{base_url}{api_code}.png"
             
-            # Skip if the file already exists
-            if os.path.exists(output_file):
-                log.info(f"Image already exists: {output_file}")
-                downloaded += 1
+            # Define our filename (e.g., hearts_a.png)
+            filename = f"{suit.lower()}_{rank.lower()}.png"
+            output_path = os.path.join('assets', 'cards', filename)
+            
+            # Skip if file already exists
+            if os.path.exists(output_path):
                 continue
-            
-            # Format for the API: for example 'AS' for Ace of Spades, '10H' for 10 of Hearts
-            suit_code = suit[0].upper()
-            rank_code = rank.upper() if rank != '10' else '10'
-            card_code = f"{rank_code}{suit_code}"
-            
-            # Download the image
-            url = f"{BASE_URL}/{card_code}.png"
-            log.info(f"Downloading {card_code} from {url}")
-            
+                
             try:
-                response = requests.get(url, stream=True)
-                if response.status_code == 200:
-                    with open(output_file, 'wb') as f:
-                        for chunk in response.iter_content(1024):
-                            f.write(chunk)
-                    downloaded += 1
-                    log.info(f"Downloaded {card_code} to {output_file}")
-                else:
-                    log.error(f"Failed to download {card_code}: {response.status_code}")
-                    failed += 1
+                # Print debug info for 10 cards specifically
+                if rank == '10':
+                    print(f"Downloading 10 card: {api_url} -> {output_path}")
+                
+                # Download the image
+                urllib.request.urlretrieve(api_url, output_path)
+                print(f"Downloaded: {filename}")
             except Exception as e:
-                log.error(f"Error downloading {card_code}: {e}")
-                failed += 1
-    
-    # Create a card back image
-    create_card_back_image(os.path.join(output_dir, "card_back.png"))
-    
-    log.info(f"Downloaded {downloaded} card images, {failed} failed")
-    return downloaded, failed
+                print(f"Error downloading {filename}: {str(e)}")
 
 def create_card_back_image(output_file):
     """Create a simple card back image"""

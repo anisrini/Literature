@@ -150,8 +150,52 @@ body {
 }
 
 .player-button.current {
-    box-shadow: 0 0 10px rgba(255, 193, 7, 0.8);
-    font-weight: bold;
+    border: 3px solid #ffc107;  /* Thicker yellow border */
+    background-color: #fff9c4;  /* Light yellow background */
+    box-shadow: 0 0 10px rgba(255, 193, 7, 0.5);  /* Glow effect */
+    transform: scale(1.05);  /* Slightly larger */
+    position: relative;  /* For the arrow indicator */
+    font-weight: bold;  /* Bold text */
+}
+
+/* Add indicator arrow before current player */
+.player-button.current::before {
+    content: "➡️";  /* Arrow emoji */
+    position: absolute;
+    left: -20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+}
+
+/* Animation for current player */
+@keyframes pulse {
+    0% { box-shadow: 0 0 10px rgba(255, 193, 7, 0.5); }
+    50% { box-shadow: 0 0 15px rgba(255, 193, 7, 0.8); }
+    100% { box-shadow: 0 0 10px rgba(255, 193, 7, 0.5); }
+}
+
+.player-button.current {
+    animation: pulse 2s infinite;
+}
+
+/* Also highlight the team header when it's that team's turn */
+.team-a-column .team-header {
+    transition: background-color 0.3s;
+}
+.team-b-column .team-header {
+    transition: background-color 0.3s;
+}
+
+/* Highlight team header when it's their turn */
+.team-a-column.active .team-header {
+    background-color: #bbdefb;  /* Brighter blue */
+    box-shadow: 0 0 5px rgba(33, 150, 243, 0.5);
+}
+
+.team-b-column.active .team-header {
+    background-color: #ffcdd2;  /* Brighter red */
+    box-shadow: 0 0 5px rgba(244, 67, 54, 0.5);
 }
 
 .player-button.human {
