@@ -369,32 +369,32 @@ body {
 .cards-container {
     width: 100%;
     margin: 0 auto;
-    padding: 8px;
+    padding: 12px;
     background-color: rgba(0, 0, 0, 0.15);
     border-radius: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
 }
 
-/* Fixed card grid layout */
+/* Fixed card grid layout - wider spacing */
 .cards-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr); /* 4 cards per row */
     grid-template-rows: repeat(2, auto); /* 2 rows */
-    gap: 10px;
+    gap: 20px; /* Increased from 15px to 20px */
     width: 100%;
-    max-width: 400px; /* Control maximum width */
-    padding: 5px;
+    max-width: 600px; /* Slightly increased from 550px */
+    padding: 10px;
     border-radius: 8px;
     background-color: rgba(220, 237, 200, 0.15);
+    margin: 0 auto; /* Center the grid */
 }
 
-/* Adjust card slot sizing for the grid */
+/* Adjust individual card slots for better proportion */
 .card-slot {
-    width: 70px;
-    height: 95px;
+    width: 75px; /* Slightly larger cards */
+    height: 105px;
     margin: 0 auto;
     background-color: rgba(255, 255, 255, 0.15);
     border-radius: 8px;
