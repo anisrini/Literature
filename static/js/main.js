@@ -26,6 +26,141 @@ const cancelRequestBtn = document.getElementById('cancel-request');
 // Add notification system functions
 let activeNotifications = [];
 
+// Completely rewritten game log system
+const GAME_LOG = {
+    // Constants
+    MAX_ENTRIES: 10,
+    initialized: false, // Track whether we've initialized
+    
+    // Initialize the game log
+    init: function() {
+        console.log("Initializing game log system");
+        
+        // Only initialize once unless forced
+        if (this.initialized) {
+            console.log("Game log already initialized, skipping");
+            return true;
+        }
+        
+        // Get or create the game log container
+        const container = document.querySelector('.game-log-container');
+        if (!container) {
+            console.error("Game log container not found in HTML");
+            return false;
+        }
+        
+        // Clear any existing content
+        container.innerHTML = `
+            <h3>Game Log</h3>
+            <div class="game-log" id="game-log">
+                <div class="log-empty">Game actions will appear here...</div>
+            </div>
+        `;
+        
+        this.initialized = true; // Mark as initialized
+        console.log("Game log system initialized successfully");
+        return true;
+    },
+    
+    // Reset the game log (only call this when starting a new game)
+    reset: function() {
+        console.log("Resetting game log");
+        this.initialized = false;
+        return this.init();
+    },
+    
+    // Add a new log entry
+    addEntry: function(entry) {
+        console.log("Adding log entry:", entry);
+        
+        // Find the game log element
+        const gameLog = document.getElementById('game-log');
+        if (!gameLog) {
+            console.error("Game log element not found");
+            return false;
+        }
+        
+        // Remove empty state message if present
+        const emptyMessage = gameLog.querySelector('.log-empty');
+        if (emptyMessage) {
+            gameLog.removeChild(emptyMessage);
+        }
+        
+        // Create the log entry
+        const logEntry = document.createElement('div');
+        logEntry.className = 'log-entry';
+        
+        // Create timestamp
+        const timestamp = document.createElement('span');
+        timestamp.className = 'log-timestamp';
+        const now = new Date();
+        timestamp.textContent = `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
+        
+        // Create player spans with team colors
+        const requesterSpan = document.createElement('span');
+        requesterSpan.className = `log-player-name log-team-${entry.requester.team === 0 ? 'a' : 'b'}`;
+        requesterSpan.textContent = entry.requester.name;
+        
+        const targetSpan = document.createElement('span');
+        targetSpan.className = `log-player-name log-team-${entry.target.team === 0 ? 'a' : 'b'}`;
+        targetSpan.textContent = entry.target.name;
+        
+        // Create message div
+        const msgDiv = document.createElement('div');
+        msgDiv.className = 'log-message';
+        
+        // Card image element
+        const cardImg = document.createElement('img');
+        cardImg.className = 'log-card';
+        cardImg.alt = `${entry.card.rank} of ${entry.card.suit}`;
+        
+        // Load card image
+        loadCardImageWithFallbacks(
+            cardImg, 
+            entry.card.suit, 
+            entry.card.rank, 
+            () => { cardImg.remove(); }
+        );
+        
+        // Build the message
+        msgDiv.appendChild(requesterSpan);
+        msgDiv.appendChild(document.createTextNode(' asked '));
+        msgDiv.appendChild(targetSpan);
+        msgDiv.appendChild(document.createTextNode(` for ${entry.card.rank} of ${entry.card.suit}`));
+        msgDiv.appendChild(document.createTextNode(entry.success ? ' and got it!' : ' but failed.'));
+        
+        // Assemble the log entry
+        logEntry.appendChild(timestamp);
+        logEntry.appendChild(msgDiv);
+        logEntry.appendChild(cardImg);
+        
+        // Add to the beginning of the log
+        gameLog.insertBefore(logEntry, gameLog.firstChild);
+        
+        // Keep only the most recent entries
+        const entries = gameLog.querySelectorAll('.log-entry');
+        if (entries.length > this.MAX_ENTRIES) {
+            for (let i = this.MAX_ENTRIES; i < entries.length; i++) {
+                entries[i].remove();
+            }
+        }
+        
+        console.log("Log entry added successfully");
+        return true;
+    },
+    
+    // Clear all entries
+    clear: function() {
+        const gameLog = document.getElementById('game-log');
+        if (gameLog) {
+            gameLog.innerHTML = '<div class="log-empty">Game actions will appear here...</div>';
+            console.log("Game log cleared");
+            return true;
+        }
+        return false;
+    }
+};
+
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     initEventListeners();
@@ -88,8 +223,12 @@ function initSocketListeners() {
     });
     
     socket.on('game_log', (entry) => {
+        console.log("Received game log event:", entry);
         if (gameState) {
-            addLogEntry(entry);
+            // Add to game log
+            GAME_LOG.addEntry(entry);
+            
+            // Show notification
             showNotification(entry);
             
             // If this was a successful card transfer, animate it
@@ -109,12 +248,16 @@ function initSocketListeners() {
 function createGame(playerCount) {
     menuStatus.textContent = `Creating ${playerCount}-player game...`;
     socket.emit('create_game', { player_count: playerCount });
+    GAME_LOG.reset(); // Reset the log when creating a new game
 }
 
 // Show game screen (hide menu)
 function showGameScreen() {
     menuScreen.classList.remove('active');
     gameScreen.classList.add('active');
+    
+    // Add decorations
+    setTimeout(addTableDecorations, 100);
 }
 
 // Show menu screen (hide game)
@@ -143,6 +286,17 @@ function updateGameDisplay() {
     
     // Update cards grid - this should happen AFTER we create the grid
     updateCardsGrid();
+    
+    // Add table decorations
+    addTableDecorations();
+    
+    // Ensure game log container exists
+    createGameLogContainer();
+    
+    // Only initialize the game log once
+    if (!GAME_LOG.initialized) {
+        GAME_LOG.init();
+    }
 }
 
 // Set up the main board layout with teams on sides and cards in middle
@@ -179,43 +333,75 @@ function updateMainBoardLayout() {
     
     // Add players to team columns
     gameState.players.forEach(player => {
-        const playerBtn = document.createElement('button');
-        playerBtn.textContent = `${player.name}\n${player.card_count} cards`;
-        playerBtn.className = 'player-button';
+        // Create player container
+        const playerContainer = document.createElement('div');
+        playerContainer.className = 'player-container';
         
-        // Process based on team
+        // Create player button
+        const playerBtn = document.createElement('button');
+        playerBtn.className = 'player-button';
+        playerBtn.dataset.playerIndex = player.index;
+        
+        // Add team class
         if (player.team === 0) {
             playerBtn.classList.add('team-a');
-            if (player.is_current) playerBtn.classList.add('current');
-            if (player.is_human) playerBtn.classList.add('human');
-            playerBtn.disabled = !player.can_request;
-            
-            if (player.can_request) {
-                playerBtn.addEventListener('click', () => {
-                    selectedPlayerIdx = player.index;
-                    showCardSelectionPopup();
-                });
-            }
-            
-            playerBtn.dataset.playerIndex = player.index;
-            
-            teamAColumn.appendChild(playerBtn);
         } else {
             playerBtn.classList.add('team-b');
-            if (player.is_current) playerBtn.classList.add('current');
-            if (player.is_human) playerBtn.classList.add('human');
-            playerBtn.disabled = !player.can_request;
-            
-            if (player.can_request) {
-                playerBtn.addEventListener('click', () => {
-                    selectedPlayerIdx = player.index;
-                    showCardSelectionPopup();
-                });
-            }
-            
-            playerBtn.dataset.playerIndex = player.index;
-            
-            teamBColumn.appendChild(playerBtn);
+        }
+        
+        // Add current player and human classes if applicable
+        if (player.is_current) playerBtn.classList.add('current');
+        if (player.is_human) playerBtn.classList.add('human');
+        
+        // Create avatar
+        const avatar = document.createElement('div');
+        avatar.className = 'player-avatar';
+        // Avatar content is provided by CSS
+
+        // Create name element
+        const nameEl = document.createElement('div');
+        nameEl.className = 'player-name';
+        nameEl.textContent = player.name;
+        
+        // Create info element
+        const infoEl = document.createElement('div');
+        infoEl.className = 'player-info';
+        infoEl.textContent = `${player.card_count} cards`;
+        
+        // Create cards in hand visual
+        const cardsEl = document.createElement('div');
+        cardsEl.className = 'player-cards';
+        
+        // Add a mini card for each card in hand (up to 8)
+        const cardCount = Math.min(player.card_count, 8);
+        for (let i = 0; i < cardCount; i++) {
+            const cardEl = document.createElement('div');
+            cardEl.className = 'card-in-hand';
+            cardsEl.appendChild(cardEl);
+        }
+        
+        // Assemble player button
+        playerBtn.appendChild(avatar);
+        playerBtn.appendChild(nameEl);
+        playerBtn.appendChild(infoEl);
+        playerBtn.appendChild(cardsEl);
+        
+        // Add click handler for requesting cards
+        playerBtn.disabled = !player.can_request;
+        if (player.can_request) {
+            playerBtn.addEventListener('click', () => {
+                selectedPlayerIdx = player.index;
+                showCardSelectionPopup();
+            });
+        }
+        
+        // Add to container and column
+        playerContainer.appendChild(playerBtn);
+        
+        if (player.team === 0) {
+            teamAColumn.appendChild(playerContainer);
+        } else {
+            teamBColumn.appendChild(playerContainer);
         }
     });
     
@@ -459,82 +645,47 @@ function processNextBotTurn() {
 
 // Return to the menu screen
 function returnToMenu() {
+    socket.emit('return_to_menu');
     showMenuScreen();
     gameState = null;
+    selectedPlayerIdx = null;
+    GAME_LOG.reset(); // Reset the log when returning to menu
 }
 
-// Add a new log entry to the game log
-function addLogEntry(entry) {
-    const gameLog = document.getElementById('game-log');
+// Make sure the game log container exists in HTML
+function createGameLogContainer() {
+    // Check if we already have a game log container
+    let gameLogContainer = document.querySelector('.game-log-container');
     
-    // Create log entry element
-    const logEntry = document.createElement('div');
-    logEntry.className = 'log-entry';
-    
-    // Add timestamp
-    const timestamp = document.createElement('span');
-    timestamp.className = 'log-timestamp';
-    timestamp.textContent = entry.timestamp;
-    logEntry.appendChild(timestamp);
-    
-    // Create message content
-    const message = document.createElement('div');
-    message.className = 'log-message';
-    
-    // Format requester name
-    const requesterTeamClass = entry.requester.team === 0 ? 'log-team-a' : 'log-team-b';
-    const requesterName = document.createElement('span');
-    requesterName.className = `log-player-name ${requesterTeamClass}`;
-    requesterName.textContent = entry.requester.name;
-    
-    // Format target name
-    const targetTeamClass = entry.target.team === 0 ? 'log-team-a' : 'log-team-b';
-    const targetName = document.createElement('span');
-    targetName.className = `log-player-name ${targetTeamClass}`;
-    targetName.textContent = entry.target.name;
-    
-    // Create message with visual card
-    message.appendChild(requesterName);
-    message.appendChild(document.createTextNode(' requested '));
-    
-    // Add visual card
-    const cardImg = document.createElement('img');
-    cardImg.className = 'log-card';
-    cardImg.alt = `${entry.card.rank} of ${entry.card.suit}`;
-    
-    // Use our robust image loading function
-    loadCardImageWithFallbacks(
-        cardImg, 
-        entry.card.suit, 
-        entry.card.rank, 
-        () => {
-            cardImg.remove();
-            message.appendChild(document.createTextNode(`${entry.card.rank} of ${entry.card.suit}`));
-        }
-    );
-    
-    message.appendChild(cardImg);
-    
-    message.appendChild(document.createTextNode(' from '));
-    message.appendChild(targetName);
-    
-    // Add result
-    const resultText = entry.success ? ' and got it!' : ' but failed.';
-    message.appendChild(document.createTextNode(resultText));
-    
-    logEntry.appendChild(message);
-    
-    // Insert at the beginning (most recent at the top)
-    if (gameLog.firstChild) {
-        gameLog.insertBefore(logEntry, gameLog.firstChild);
-    } else {
-        gameLog.appendChild(logEntry);
+    // If it doesn't exist, create it
+    if (!gameLogContainer) {
+        console.log("Creating missing game log container");
+        gameLogContainer = document.createElement('div');
+        gameLogContainer.className = 'game-log-container';
+        
+        // Add it to the game screen
+        const gameScreen = document.getElementById('game-screen');
+        gameScreen.appendChild(gameLogContainer);
     }
     
-    // Keep only the most recent two entries
-    while (gameLog.children.length > 2) {
-        gameLog.removeChild(gameLog.lastChild);
+    // Make sure it has title
+    let logTitle = gameLogContainer.querySelector('h3');
+    if (!logTitle) {
+        logTitle = document.createElement('h3');
+        logTitle.textContent = 'Game Log';
+        gameLogContainer.prepend(logTitle);
     }
+    
+    // Make sure it has log element
+    let gameLog = gameLogContainer.querySelector('.game-log');
+    if (!gameLog) {
+        gameLog = document.createElement('div');
+        gameLog.className = 'game-log';
+        gameLog.id = 'game-log';
+        gameLogContainer.appendChild(gameLog);
+    }
+    
+    return gameLogContainer;
 }
 
 // Add this function to help debug the card image loading
@@ -830,4 +981,25 @@ function animateCardTransfer(fromPlayer, toPlayer, card) {
             cardEl.parentNode.removeChild(cardEl);
         }
     }, duration * 1000 + 100);
+}
+
+// Add this to the end of updateGameDisplay()
+function addTableDecorations() {
+    // Add decorative suit symbols to the corners of the game screen
+    const gameScreen = document.getElementById('game-screen');
+    
+    // Remove existing decorations
+    const existingDecorations = gameScreen.querySelectorAll('.card-corner-decoration');
+    existingDecorations.forEach(el => el.remove());
+    
+    // Add new decorations
+    const suits = ['♥', '♠', '♦', '♣'];
+    const positions = ['decoration-1', 'decoration-2', 'decoration-3', 'decoration-4'];
+    
+    for (let i = 0; i < 4; i++) {
+        const decoration = document.createElement('div');
+        decoration.className = `card-corner-decoration ${positions[i]}`;
+        decoration.textContent = suits[i];
+        gameScreen.appendChild(decoration);
+    }
 }
