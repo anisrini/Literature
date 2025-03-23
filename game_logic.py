@@ -155,6 +155,26 @@ class Game:
         # Print game setup info
         for player in self.players:
             log.info(f"{player.name} has {len(player.hand)} cards (Team {player.team+1})")
+        
+        # After dealing cards, add detailed logging
+        log.info("=== INITIAL CARD DISTRIBUTION ===")
+        for i, player in enumerate(self.players):
+            card_list = [f"{card.rank} of {card.suit}" for card in player.hand]
+            log.info(f"Player {i}: {player.name} (Team {player.team}) - {len(player.hand)} cards:")
+            
+            # Group cards by suit for clearer display
+            suits = {}
+            for card in player.hand:
+                if card.suit not in suits:
+                    suits[card.suit] = []
+                suits[card.suit].append(card.rank)
+            
+            # Log cards organized by suit
+            for suit in sorted(suits.keys()):
+                ranks = sorted(suits[suit], key=lambda r: Card.RANKS.index(r) if r in Card.RANKS else 100)
+                log.info(f"  {suit}: {', '.join(ranks)}")
+            
+        log.info("================================")
     
     def create_deck(self):
         """Create a standard deck of cards"""
