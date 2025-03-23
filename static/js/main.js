@@ -27,6 +27,7 @@ const cancelRequestBtn = document.getElementById('cancel-request');
 document.addEventListener('DOMContentLoaded', function() {
     initEventListeners();
     initSocketListeners();
+    setTimeout(debugCardImageLoading, 2000); // Wait 2 seconds before testing
 });
 
 // Initialize event listeners
@@ -212,13 +213,18 @@ function updateMainBoardLayout() {
 function updateCardsGrid() {
     // Get the cards grid that was dynamically created
     const cardsGrid = document.getElementById('cards-grid');
-    if (!cardsGrid) return; // Safety check
+    if (!cardsGrid) return;
     
     cardsGrid.innerHTML = '';
     
-    // Sort cards by suit and rank
+    // Sort cards
     const sortedCards = [...gameState.human_cards].sort((a, b) => {
-        if (a.suit !== b.suit) return a.suit.localeCompare(b.suit);
+        // Sort by suit first
+        const suitOrder = {'Hearts': 1, 'Diamonds': 2, 'Clubs': 3, 'Spades': 4};
+        const suitDiff = suitOrder[a.suit] - suitOrder[b.suit];
+        if (suitDiff !== 0) return suitDiff;
+        
+        // Then by rank
         const rankOrder = {
             'A': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7,
             '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13
@@ -227,26 +233,62 @@ function updateCardsGrid() {
     });
     
     sortedCards.forEach(card => {
-        const cardDiv = document.createElement('div');
-        cardDiv.className = 'card';
-        if (card.is_new) cardDiv.classList.add('highlight');
+        const cardEl = document.createElement('div');
+        cardEl.className = 'card';
+        if (card.is_new) cardEl.classList.add('highlight');
         
-        const imgPath = `/assets/cards/${card.suit.toLowerCase()}_${card.rank.toLowerCase()}.png`;
         const img = document.createElement('img');
-        img.src = imgPath;
         img.alt = `${card.rank} of ${card.suit}`;
-        img.onerror = () => {
-            // Fallback to text if image fails to load
-            img.remove();
-            cardDiv.textContent = `${card.rank} of ${card.suit}`;
-            if (card.suit === 'Hearts' || card.suit === 'Diamonds') {
-                cardDiv.style.color = 'red';
-            }
-        };
         
-        cardDiv.appendChild(img);
-        cardsGrid.appendChild(cardDiv);
+        // Use our robust image loading function
+        loadCardImageWithFallbacks(img, card.suit, card.rank, () => {
+            // Fallback callback
+            img.remove();
+            cardEl.textContent = `${card.rank} of ${card.suit}`;
+            // Add red color for hearts/diamonds
+            if (card.suit === 'Hearts' || card.suit === 'Diamonds') {
+                cardEl.style.color = 'red';
+            }
+        });
+        
+        cardEl.appendChild(img);
+        cardsGrid.appendChild(cardEl);
     });
+}
+
+// Special handling for card image paths - try multiple potential filename patterns
+function getCardImagePath(suit, rank) {
+    const suitText = suit.toLowerCase();
+    const rankText = rank.toLowerCase();
+    
+    // Return an array of possible paths to try in order
+    return [
+        `/assets/cards/${suitText}_${rankText}.png`,          // standard: hearts_10.png
+        `/assets/cards/${rankText}_of_${suitText}.png`,       // alternate: 10_of_hearts.png
+        `/assets/cards/${suitText}_${rank}.png`,              // case sensitive: hearts_10.png
+        `/assets/cards/${rankText}${suitText[0]}.png`         // api style: 10h.png
+    ];
+}
+
+// Update card image loading with fallback paths
+function loadCardImageWithFallbacks(imgElement, suit, rank, fallbackCallback) {
+    const paths = getCardImagePath(suit, rank);
+    let pathIndex = 0;
+    
+    // Try loading image from first path
+    imgElement.src = paths[pathIndex];
+    
+    // Handle error by trying next path or falling back to text
+    imgElement.onerror = function() {
+        pathIndex++;
+        if (pathIndex < paths.length) {
+            // Try next path
+            imgElement.src = paths[pathIndex];
+        } else {
+            // All paths failed, use fallback
+            fallbackCallback();
+        }
+    };
 }
 
 // Show card selection popup
@@ -428,12 +470,19 @@ function addLogEntry(entry) {
     // Add visual card
     const cardImg = document.createElement('img');
     cardImg.className = 'log-card';
-    cardImg.src = `/assets/cards/${entry.card.suit.toLowerCase()}_${entry.card.rank.toLowerCase()}.png`;
     cardImg.alt = `${entry.card.rank} of ${entry.card.suit}`;
-    cardImg.onerror = () => {
-        cardImg.remove();
-        message.appendChild(document.createTextNode(`${entry.card.rank} of ${entry.card.suit}`));
-    };
+    
+    // Use our robust image loading function
+    loadCardImageWithFallbacks(
+        cardImg, 
+        entry.card.suit, 
+        entry.card.rank, 
+        () => {
+            cardImg.remove();
+            message.appendChild(document.createTextNode(`${entry.card.rank} of ${entry.card.suit}`));
+        }
+    );
+    
     message.appendChild(cardImg);
     
     message.appendChild(document.createTextNode(' from '));
@@ -456,4 +505,26 @@ function addLogEntry(entry) {
     while (gameLog.children.length > 2) {
         gameLog.removeChild(gameLog.lastChild);
     }
+}
+
+// Add this function to help debug the card image loading
+function debugCardImageLoading() {
+    // Log all the card image loading attempts
+    console.log("Debugging card images...");
+    
+    const suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades'];
+    const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+    
+    suits.forEach(suit => {
+        ranks.forEach(rank => {
+            const paths = getCardImagePath(suit, rank);
+            console.log(`Card: ${rank} of ${suit}, Paths:`, paths);
+            
+            // Create a test image to check if it loads
+            const testImg = new Image();
+            testImg.onload = () => console.log(`SUCCESS: ${testImg.src} loaded`);
+            testImg.onerror = () => console.log(`FAILED: ${testImg.src} not found`);
+            testImg.src = paths[0];
+        });
+    });
 }
