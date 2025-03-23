@@ -2195,3 +2195,120 @@
 2025-03-23 09:05:47,594 - game_logic - INFO - Player 1 (You) asks Bot 5 for 9 of Clubs
 2025-03-23 09:05:51,228 - game_logic - INFO - Bot 5 asks Player 1 (You) for the Q of Hearts
 2025-03-23 09:05:51,228 - game_logic - INFO - Player 1 (You) doesn't have the Q of Hearts
+2025-03-23 09:14:25,308 - __main__ - INFO - Starting Literature Card Game Web Server
+2025-03-23 09:14:25,324 - werkzeug - INFO -  * Restarting with stat
+2025-03-23 09:14:25,694 - __main__ - INFO - Starting Literature Card Game Web Server
+2025-03-23 09:14:25,712 - werkzeug - WARNING -  * Debugger is active!
+2025-03-23 09:14:25,722 - werkzeug - INFO -  * Debugger PIN: 129-322-287
+2025-03-23 09:14:29,492 - game_logic - INFO - Creating new game with 6 players (human is player 1)
+2025-03-23 09:14:29,494 - game_logic - INFO - Created and shuffled deck with 52 cards
+2025-03-23 09:14:29,494 - game_logic - INFO - Dealing 8 cards per player
+2025-03-23 09:14:29,494 - game_logic - INFO - Player 1 (You) has 8 cards (Team 1)
+2025-03-23 09:14:29,503 - game_logic - INFO - Bot 2 has 8 cards (Team 1)
+2025-03-23 09:14:29,503 - game_logic - INFO - Bot 3 has 8 cards (Team 1)
+2025-03-23 09:14:29,503 - game_logic - INFO - Bot 4 has 8 cards (Team 2)
+2025-03-23 09:14:29,503 - game_logic - INFO - Bot 5 has 8 cards (Team 2)
+2025-03-23 09:14:29,503 - game_logic - INFO - Bot 6 has 8 cards (Team 2)
+2025-03-23 09:14:29,504 - __main__ - INFO - Created game 148201ad-5f27-47f2-9094-573b1b069aa2 with 6 players
+2025-03-23 09:14:32,060 - game_logic - INFO - Player 1 (You) asks Bot 4 for 4 of Hearts
+2025-03-23 09:14:45,446 - game_logic - INFO - Bot 4 asks Bot 3 for the 3 of Diamonds
+2025-03-23 09:14:45,447 - game_logic - INFO - Bot 3 doesn't have the 3 of Diamonds
+2025-03-23 09:16:20,246 - __main__ - INFO - Starting Literature Card Game Web Server
+2025-03-23 09:16:20,261 - werkzeug - INFO -  * Restarting with stat
+2025-03-23 09:16:20,600 - __main__ - INFO - Starting Literature Card Game Web Server
+2025-03-23 09:16:20,616 - werkzeug - WARNING -  * Debugger is active!
+2025-03-23 09:16:20,625 - werkzeug - INFO -  * Debugger PIN: 129-322-287
+2025-03-23 09:16:24,475 - game_logic - INFO - Creating new game with 6 players (human is player 1)
+2025-03-23 09:16:24,476 - game_logic - INFO - Created and shuffled deck with 52 cards
+2025-03-23 09:16:24,476 - game_logic - INFO - Dealing 8 cards per player
+2025-03-23 09:16:24,476 - game_logic - INFO - Player 1 (You) has 8 cards (Team 1)
+2025-03-23 09:16:24,476 - game_logic - INFO - Bot 2 has 8 cards (Team 1)
+2025-03-23 09:16:24,476 - game_logic - INFO - Bot 3 has 8 cards (Team 1)
+2025-03-23 09:16:24,477 - game_logic - INFO - Bot 4 has 8 cards (Team 2)
+2025-03-23 09:16:24,478 - game_logic - INFO - Bot 5 has 8 cards (Team 2)
+2025-03-23 09:16:24,478 - game_logic - INFO - Bot 6 has 8 cards (Team 2)
+2025-03-23 09:16:24,478 - __main__ - INFO - Created game 57591d30-d64c-4529-bd39-361c95300de0 with 6 players
+2025-03-23 09:16:27,454 - game_logic - INFO - Player 1 (You) asks Bot 5 for 6 of Hearts
+2025-03-23 09:19:20,005 - __main__ - INFO - Starting Literature Card Game Web Server
+2025-03-23 09:19:20,020 - werkzeug - INFO -  * Restarting with stat
+2025-03-23 09:19:20,387 - __main__ - INFO - Starting Literature Card Game Web Server
+2025-03-23 09:19:20,399 - werkzeug - WARNING -  * Debugger is active!
+2025-03-23 09:19:20,408 - werkzeug - INFO -  * Debugger PIN: 129-322-287
+2025-03-23 09:19:26,273 - game_logic - INFO - Creating new game with 6 players (human is player 1)
+2025-03-23 09:19:26,274 - game_logic - INFO - Created and shuffled deck with 52 cards
+2025-03-23 09:19:26,274 - game_logic - INFO - Dealing 8 cards per player
+2025-03-23 09:19:26,274 - game_logic - INFO - Player 1 (You) has 8 cards (Team 1)
+2025-03-23 09:19:26,274 - game_logic - INFO - Bot 2 has 8 cards (Team 1)
+2025-03-23 09:19:26,274 - game_logic - INFO - Bot 3 has 8 cards (Team 1)
+2025-03-23 09:19:26,274 - game_logic - INFO - Bot 4 has 8 cards (Team 2)
+2025-03-23 09:19:26,274 - game_logic - INFO - Bot 5 has 8 cards (Team 2)
+2025-03-23 09:19:26,274 - game_logic - INFO - Bot 6 has 8 cards (Team 2)
+2025-03-23 09:19:26,275 - __main__ - INFO - Created game f7d97a8f-9b0e-4458-ba1c-c0aea6e8b49c with 6 players
+2025-03-23 09:19:43,170 - game_logic - INFO - Player 1 (You) asks Bot 6 for K of Clubs
+2025-03-23 09:19:47,962 - game_logic - INFO - Bot 6 asks Bot 2 for the 9 of Diamonds
+2025-03-23 09:19:47,963 - game_logic - INFO - Bot 2 doesn't have the 9 of Diamonds
+2025-03-23 09:19:51,763 - game_logic - INFO - Bot 2 asks Bot 6 for the 5 of Clubs
+2025-03-23 09:19:51,764 - game_logic - INFO - Bot 6 doesn't have the 5 of Clubs
+2025-03-23 09:19:55,178 - game_logic - INFO - Bot 6 asks Bot 2 for the 9 of Diamonds
+2025-03-23 09:19:55,178 - game_logic - INFO - Bot 2 doesn't have the 9 of Diamonds
+2025-03-23 09:19:58,546 - game_logic - INFO - Bot 2 asks Bot 4 for the 8 of Spades
+2025-03-23 09:19:58,546 - game_logic - INFO - Bot 4 doesn't have the 8 of Spades
+2025-03-23 09:20:01,624 - game_logic - INFO - Bot 4 asks Player 1 (You) for the 2 of Spades
+2025-03-23 09:20:01,625 - game_logic - INFO - Player 1 (You) doesn't have the 2 of Spades
+2025-03-23 09:20:05,951 - game_logic - INFO - Player 1 (You) asks Bot 6 for J of Spades
+2025-03-23 09:20:14,500 - game_logic - INFO - Bot 6 asks Bot 3 for the Q of Diamonds
+2025-03-23 09:20:14,500 - game_logic - INFO - Bot 3 doesn't have the Q of Diamonds
+2025-03-23 09:20:17,913 - game_logic - INFO - Bot 3 asks Bot 4 for the Q of Spades
+2025-03-23 09:20:17,914 - game_logic - INFO - Bot 4 doesn't have the Q of Spades
+2025-03-23 09:20:21,278 - game_logic - INFO - Bot 4 asks Player 1 (You) for the A of Hearts
+2025-03-23 09:20:21,278 - game_logic - INFO - Player 1 (You) doesn't have the A of Hearts
+2025-03-23 09:20:28,468 - game_logic - INFO - Player 1 (You) asks Bot 5 for Q of Spades
+2025-03-23 09:20:31,931 - game_logic - INFO - Bot 5 asks Player 1 (You) for the 3 of Hearts
+2025-03-23 09:20:31,931 - game_logic - INFO - Player 1 (You) doesn't have the 3 of Hearts
+2025-03-23 09:20:35,818 - game_logic - INFO - Player 1 (You) asks Bot 4 for 6 of Spades
+2025-03-23 09:20:39,822 - game_logic - INFO - Bot 4 asks Player 1 (You) for the A of Diamonds
+2025-03-23 09:20:39,823 - game_logic - INFO - Player 1 (You) doesn't have the A of Diamonds
+2025-03-23 09:20:44,201 - game_logic - INFO - Player 1 (You) asks Bot 5 for J of Clubs
+2025-03-23 09:20:54,386 - game_logic - INFO - Bot 5 asks Player 1 (You) for the 4 of Hearts
+2025-03-23 09:20:54,386 - game_logic - INFO - Player 1 (You) doesn't have the 4 of Hearts
+2025-03-23 09:21:00,934 - game_logic - INFO - Player 1 (You) asks Bot 4 for 9 of Hearts
+2025-03-23 09:21:02,436 - game_logic - INFO - Bot 4 asks Bot 2 for the 4 of Clubs
+2025-03-23 09:21:02,437 - game_logic - INFO - Bot 2 doesn't have the 4 of Clubs
+2025-03-23 09:21:05,940 - game_logic - INFO - Bot 2 asks Bot 6 for the 5 of Clubs
+2025-03-23 09:21:05,940 - game_logic - INFO - Bot 6 doesn't have the 5 of Clubs
+2025-03-23 09:21:09,443 - game_logic - INFO - Bot 6 asks Bot 2 for the 9 of Spades
+2025-03-23 09:21:09,443 - game_logic - INFO - Bot 2 doesn't have the 9 of Spades
+2025-03-23 09:21:12,946 - game_logic - INFO - Bot 2 asks Bot 6 for the 2 of Hearts
+2025-03-23 09:21:12,946 - game_logic - INFO - Bot 6 doesn't have the 2 of Hearts
+2025-03-23 09:21:16,449 - game_logic - INFO - Bot 6 asks Player 1 (You) for the A of Spades
+2025-03-23 09:21:16,450 - game_logic - INFO - Player 1 (You) doesn't have the A of Spades
+2025-03-23 09:21:24,602 - game_logic - INFO - Player 1 (You) asks Bot 5 for 4 of Clubs
+2025-03-23 09:21:26,104 - game_logic - INFO - Bot 5 asks Bot 2 for the 8 of Clubs
+2025-03-23 09:21:26,104 - game_logic - INFO - Bot 2 doesn't have the 8 of Clubs
+2025-03-23 09:21:29,610 - game_logic - INFO - Bot 2 asks Bot 4 for the 2 of Hearts
+2025-03-23 09:21:29,610 - game_logic - INFO - Bot 4 doesn't have the 2 of Hearts
+2025-03-23 09:21:33,114 - game_logic - INFO - Bot 4 asks Bot 3 for the A of Diamonds
+2025-03-23 09:21:33,114 - game_logic - INFO - Bot 3 doesn't have the A of Diamonds
+2025-03-23 09:21:36,618 - game_logic - INFO - Bot 3 asks Bot 5 for the 7 of Clubs
+2025-03-23 09:21:36,619 - game_logic - INFO - Bot 5 doesn't have the 7 of Clubs
+2025-03-23 09:21:40,122 - game_logic - INFO - Bot 5 asks Bot 2 for the 10 of Spades
+2025-03-23 09:21:40,123 - game_logic - INFO - Bot 2 doesn't have the 10 of Spades
+2025-03-23 09:21:43,626 - game_logic - INFO - Bot 2 asks Bot 5 for the K of Clubs
+2025-03-23 09:21:43,626 - game_logic - INFO - Bot 5 doesn't have the K of Clubs
+2025-03-23 09:21:47,130 - game_logic - INFO - Bot 5 asks Bot 2 for the 8 of Clubs
+2025-03-23 09:21:47,131 - game_logic - INFO - Bot 2 doesn't have the 8 of Clubs
+2025-03-23 09:21:50,634 - game_logic - INFO - Bot 2 asks Bot 6 for the 2 of Hearts
+2025-03-23 09:21:50,634 - game_logic - INFO - Bot 6 doesn't have the 2 of Hearts
+2025-03-23 09:21:54,138 - game_logic - INFO - Bot 6 asks Player 1 (You) for the J of Clubs
+2025-03-23 09:21:54,138 - game_logic - INFO - Player 1 (You) doesn't have the J of Clubs
+2025-03-23 09:22:05,222 - game_logic - INFO - Player 1 (You) asks Bot 6 for Q of Hearts
+2025-03-23 09:22:06,725 - game_logic - INFO - Bot 6 asks Bot 3 for the K of Hearts
+2025-03-23 09:22:06,726 - game_logic - INFO - Bot 3 doesn't have the K of Hearts
+2025-03-23 09:22:10,231 - game_logic - INFO - Bot 3 asks Bot 6 for the J of Diamonds
+2025-03-23 09:22:10,231 - game_logic - INFO - Bot 6 doesn't have the J of Diamonds
+2025-03-23 09:22:13,735 - game_logic - INFO - Bot 6 asks Bot 2 for the K of Hearts
+2025-03-23 09:22:13,736 - game_logic - INFO - Bot 2 doesn't have the K of Hearts
+2025-03-23 09:22:17,239 - game_logic - INFO - Bot 2 asks Bot 4 for the K of Clubs
+2025-03-23 09:22:17,240 - game_logic - INFO - Bot 4 doesn't have the K of Clubs
+2025-03-23 09:22:20,744 - game_logic - INFO - Bot 4 asks Player 1 (You) for the 4 of Diamonds
+2025-03-23 09:22:20,744 - game_logic - INFO - Player 1 (You) doesn't have the 4 of Diamonds

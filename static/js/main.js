@@ -23,6 +23,9 @@ const nextBotBtn = document.getElementById('next-bot');
 const returnMenuBtn = document.getElementById('return-menu');
 const cancelRequestBtn = document.getElementById('cancel-request');
 
+// Add notification system functions
+let activeNotifications = [];
+
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     initEventListeners();
@@ -87,6 +90,17 @@ function initSocketListeners() {
     socket.on('game_log', (entry) => {
         if (gameState) {
             addLogEntry(entry);
+            showNotification(entry);
+            
+            // If this was a successful card transfer, animate it
+            if (entry.success) {
+                // Find the player objects
+                const fromPlayer = gameState.players.find(p => p.index === gameState.players.findIndex(p => p.name === entry.target.name));
+                const toPlayer = gameState.players.find(p => p.index === gameState.players.findIndex(p => p.name === entry.requester.name));
+                
+                // Animate the transfer
+                animateCardTransfer(fromPlayer, toPlayer, entry.card);
+            }
         }
     });
 }
@@ -183,6 +197,8 @@ function updateMainBoardLayout() {
                 });
             }
             
+            playerBtn.dataset.playerIndex = player.index;
+            
             teamAColumn.appendChild(playerBtn);
         } else {
             playerBtn.classList.add('team-b');
@@ -196,6 +212,8 @@ function updateMainBoardLayout() {
                     showCardSelectionPopup();
                 });
             }
+            
+            playerBtn.dataset.playerIndex = player.index;
             
             teamBColumn.appendChild(playerBtn);
         }
@@ -541,6 +559,138 @@ function debugCardImageLoading() {
     });
 }
 
+// Add a notification for an action
+function showNotification(entry) {
+    // Create notification container if it doesn't exist
+    let container = document.getElementById('notification-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'notification-container';
+        container.className = 'notification-container';
+        document.body.appendChild(container);
+    }
+    
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = 'notification';
+    notification.classList.add(entry.success ? 'success' : 'failure');
+    
+    // Create timer bar
+    const timer = document.createElement('div');
+    timer.className = 'notification-timer';
+    notification.appendChild(timer);
+    
+    // Create close button
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'notification-close';
+    closeBtn.innerHTML = '&times;';
+    closeBtn.addEventListener('click', () => {
+        removeNotification(notification);
+    });
+    notification.appendChild(closeBtn);
+    
+    // Create notification content by cloning log entry format
+    const content = document.createElement('div');
+    
+    // Format requester name
+    const requesterTeamClass = entry.requester.team === 0 ? 'log-team-a' : 'log-team-b';
+    const requesterName = document.createElement('span');
+    requesterName.className = `log-player-name ${requesterTeamClass}`;
+    requesterName.textContent = entry.requester.name;
+    
+    // Format target name
+    const targetTeamClass = entry.target.team === 0 ? 'log-team-a' : 'log-team-b';
+    const targetName = document.createElement('span');
+    targetName.className = `log-player-name ${targetTeamClass}`;
+    targetName.textContent = entry.target.name;
+    
+    // Create message with visual card
+    content.appendChild(requesterName);
+    content.appendChild(document.createTextNode(' requested '));
+    
+    // Add visual card
+    const cardImg = document.createElement('img');
+    cardImg.className = 'notification-card';
+    cardImg.alt = `${entry.card.rank} of ${entry.card.suit}`;
+    
+    // Use our robust image loading function
+    loadCardImageWithFallbacks(
+        cardImg, 
+        entry.card.suit, 
+        entry.card.rank, 
+        () => {
+            cardImg.remove();
+            content.appendChild(document.createTextNode(`${entry.card.rank} of ${entry.card.suit}`));
+        }
+    );
+    
+    content.appendChild(cardImg);
+    
+    content.appendChild(document.createTextNode(' from '));
+    content.appendChild(targetName);
+    
+    // Add result
+    const resultText = entry.success ? ' and got it!' : ' but failed.';
+    content.appendChild(document.createTextNode(resultText));
+    
+    notification.appendChild(content);
+    
+    // Add to container
+    container.appendChild(notification);
+    
+    // Track this notification
+    const notificationId = Date.now();
+    notification.dataset.id = notificationId;
+    activeNotifications.push(notificationId);
+    
+    // Trigger animation after a small delay (for browser to process)
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 10);
+    
+    // Auto dismiss after 4 seconds
+    const timeoutId = setTimeout(() => {
+        removeNotification(notification);
+    }, 4000);
+    
+    notification.dataset.timeoutId = timeoutId;
+    
+    return notification;
+}
+
+// Remove a notification
+function removeNotification(notification) {
+    // Clear the timeout if it exists
+    if (notification.dataset.timeoutId) {
+        clearTimeout(parseInt(notification.dataset.timeoutId, 10));
+    }
+    
+    // Remove show class to trigger fade out
+    notification.classList.remove('show');
+    
+    // Remove from DOM after animation completes
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+        }
+        
+        // Remove from active notifications
+        const index = activeNotifications.indexOf(parseInt(notification.dataset.id, 10));
+        if (index > -1) {
+            activeNotifications.splice(index, 1);
+        }
+    }, 300);
+}
+
+// Remove all active notifications
+function clearAllNotifications() {
+    const container = document.getElementById('notification-container');
+    if (container) {
+        const notifications = container.querySelectorAll('.notification');
+        notifications.forEach(removeNotification);
+    }
+}
+
 // Handle keyboard navigation
 function handleKeyPress(event) {
     // Only process when game is active
@@ -548,8 +698,9 @@ function handleKeyPress(event) {
         return;
     }
     
-    // Right arrow key - process next bot turn
+    // Right arrow key - process next bot turn and clear notifications
     if (event.key === 'ArrowRight') {
+        clearAllNotifications();
         processNextBotTurn();
         event.preventDefault(); // Prevent default browser behavior (like scrolling)
     }
@@ -559,4 +710,124 @@ function handleKeyPress(event) {
         closeCardSelectionPopup();
         event.preventDefault();
     }
+}
+
+// Card transfer animation
+function animateCardTransfer(fromPlayer, toPlayer, card) {
+    // Only animate on successful transfers
+    if (!fromPlayer || !toPlayer || !card) return;
+    
+    // Find player elements
+    const fromPlayerEl = document.querySelector(`.player-button[data-player-index="${fromPlayer.index}"]`);
+    const toPlayerEl = document.querySelector(`.player-button[data-player-index="${toPlayer.index}"]`);
+    
+    if (!fromPlayerEl || !toPlayerEl) return;
+    
+    // Get positions
+    const fromRect = fromPlayerEl.getBoundingClientRect();
+    const toRect = toPlayerEl.getBoundingClientRect();
+    
+    // Create moving card element
+    const cardEl = document.createElement('img');
+    cardEl.className = 'transfer-card';
+    cardEl.alt = `${card.rank} of ${card.suit}`;
+    
+    // Load card image using our helper
+    loadCardImageWithFallbacks(
+        cardEl, 
+        card.suit, 
+        card.rank, 
+        () => {
+            // If image fails to load, use a generic card back
+            cardEl.src = '/assets/cards/card_back.png';
+        }
+    );
+    
+    // Position at start point
+    cardEl.style.left = `${fromRect.left + fromRect.width/2 - 35}px`;
+    cardEl.style.top = `${fromRect.top + fromRect.height/2 - 49}px`;
+    
+    // Add to DOM
+    document.body.appendChild(cardEl);
+    
+    // Calculate animation path
+    const endX = toRect.left + toRect.width/2 - 35;
+    const endY = toRect.top + toRect.height/2 - 49;
+    const startX = parseFloat(cardEl.style.left);
+    const startY = parseFloat(cardEl.style.top);
+    const distance = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2));
+    
+    // Set animation duration based on distance (faster for shorter distances)
+    const duration = Math.min(1.5, Math.max(0.8, distance / 800));
+    
+    // Apply animation
+    cardEl.style.animation = `transferCard ${duration}s forwards`;
+    
+    // Create sparkle trail effect
+    let sparkleCount = 0;
+    const maxSparkles = 15;
+    const sparkleInterval = setInterval(() => {
+        if (sparkleCount >= maxSparkles) {
+            clearInterval(sparkleInterval);
+            return;
+        }
+        
+        // Create sparkle element
+        const sparkle = document.createElement('div');
+        sparkle.className = 'sparkle';
+        
+        // Position along the path (with randomness)
+        const progress = sparkleCount / maxSparkles;
+        const posX = startX + (endX - startX) * progress + (Math.random() * 40 - 20);
+        const posY = startY + (endY - startY) * progress + (Math.random() * 40 - 20);
+        
+        sparkle.style.left = `${posX}px`;
+        sparkle.style.top = `${posY}px`;
+        sparkle.style.animation = `sparkle ${0.5 + Math.random() * 0.5}s forwards`;
+        
+        // Add to DOM
+        document.body.appendChild(sparkle);
+        
+        // Remove after animation
+        setTimeout(() => {
+            if (sparkle.parentNode) {
+                sparkle.parentNode.removeChild(sparkle);
+            }
+        }, 1000);
+        
+        sparkleCount++;
+    }, duration * 1000 / maxSparkles);
+    
+    // Move card
+    const animationFrames = 60;
+    let frame = 0;
+    
+    const moveCard = () => {
+        if (frame >= animationFrames) {
+            // Animation complete, remove card
+            if (cardEl.parentNode) {
+                cardEl.parentNode.removeChild(cardEl);
+            }
+            return;
+        }
+        
+        const progress = frame / animationFrames;
+        const newX = startX + (endX - startX) * progress;
+        const newY = startY + (endY - startY) * progress;
+        
+        cardEl.style.left = `${newX}px`;
+        cardEl.style.top = `${newY}px`;
+        
+        frame++;
+        requestAnimationFrame(moveCard);
+    };
+    
+    requestAnimationFrame(moveCard);
+    
+    // Clean up after animation
+    setTimeout(() => {
+        if (cardEl.parentNode) {
+            cardEl.parentNode.removeChild(cardEl);
+        }
+    }, duration * 1000 + 100);
 }
